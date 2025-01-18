@@ -2,6 +2,7 @@
 title: "Making 'messy' Data: An R Package for Teaching Data Wrangling with Realistic Data"
 author:
   - name: Nicola Rennie
+    orcid: 0000-0003-4797-557X
     email: "n.rennie@lancaster.ac.uk"
     affiliations:
       - name: Lancaster University
@@ -9,6 +10,8 @@ author:
         city: Lancaster
         country: UK
         postal-code: "LA1 4YW"
+    attributes:
+      corresponding: true
 bibliography: references.bib
 date: last-modified
 format:
