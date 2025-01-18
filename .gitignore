@@ -4,3 +4,6 @@
 .Ruserdata
 *.html
 *_files/
+index.tex
+index.pdf
+agsm.bst

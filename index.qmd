@@ -1,6 +1,5 @@
 ---
-title: "messy: an R package to make example data more realistic"
-date: "November 2024"
+title: "Making 'messy' Data: An R Package for Teaching Data Wrangling with Realistic Data"
 author:
   - name: Nicola Rennie
     email: "n.rennie@lancaster.ac.uk"
@@ -11,15 +10,16 @@ author:
         country: UK
         postal-code: "LA1 4YW"
 bibliography: references.bib
+date: last-modified
 format:
-  html: 
-    number-sections: true
-    number-depth: 3
+  jasa-pdf:
+    keep-tex: true
 execute: 
   echo: true
   eval: true
-keywords: dataset, real
-abstract: "Equipping statistics and data science students with the data wrangling skills necessary to ... . Real data can often include typos, missing values encoded in strange ways, unusual spaces in words, or other factors. Example data sets designed for teaching often lack many of these messy properties of real data, whilst publicly available real data can be too messy or ... . This paper presents an R package to ... . Meaning educators can continue to use the example data sets, but add an opportunity to ... ."
+keywords:
+  - real world data
+abstract: "Equipping statistics and data science students with the data wrangling skills necessary to ... . Real data can often include typos, missing values encoded in strange ways, unusual spaces in words, or other factors. Example data sets designed for teaching often lack many of these messy properties of real data, whilst publicly available real data can be too messy for teaching ... . This paper presents an R package to ... . Meaning educators can continue to use the example data sets, but add an opportunity to ... ."
 ---
 
 ```{r}
@@ -41,20 +41,7 @@ example_data <- tibble::tribble(
 ```
 
 
-::: {.callout-warning}
-## To Do
-
-* Draft paper
-* Choose examples
-* renv
-
-:::
-
-
-
-
-
-# Introduction
+## Introduction {#sec-intro}
 
 When teaching examples using R, instructors often using nice datasets - but these aren't very realistic, and aren't what students will later encounter in the real world. Real datasets have typos, missing values encoded in strange ways, and weird spaces. The {messy} R package takes a clean dataset, and randomly adds these things in - giving students the opportunity to practice their data cleaning and wrangling skills without having to change all of your examples.
 often derived from human error or incompatibility between software versions  
@@ -75,11 +62,11 @@ other tools for generating data
 R scripts
 @McSweeney2024
 
-# Materials and methods
+## Materials and methods {#sec-methods}
 
-## Common data issues
+### Common data issues
 
-### Missing values
+#### Missing values
 
 Missing values are a common ... . Here, we are not concerned with the approach to modellign statsitcs with missing values but rather ...
 
@@ -87,7 +74,7 @@ missing values (represented in different ways) In R [@RCore], but in other ... m
 
 encoded multiple ways in smae column - different meaning
 
-### Probs deriving from ree text
+#### Probs deriving from ree text
 
 Free text, or survey data that is updated 
 encourage visualisation to spot these errors
@@ -97,7 +84,7 @@ spaces
 case 
 
 
-## R package design
+### R package design
 
 Follows tidyverse principles [@tidyverse]
 
@@ -107,13 +94,13 @@ wrapper function
 
 random seed
 
-## Types of messiness
+### Types of messiness
 
 missing values 
 chnage case
 whitespace
 
-## User options
+### User options
 
 * how missing values represented
 * which columns
@@ -131,9 +118,9 @@ knitr::kable(funcs)
 
 
 
-# Results
+## Results {#sec-res}
 
-## Example data
+### Example data
 
 ```{r}
 #| label: show-example-data
@@ -159,7 +146,7 @@ example_data |>
 ```
 
 
-# Discussion
+## Discussion {#sec-disc}
 
 though this is an R package, it is useful for other languages. save as csv
 
@@ -169,17 +156,23 @@ For teachers using ... datasets found online, makes data non-identical and allow
 
 also useful for classes on modelling missing data
 
-### Acknowledgments {.unnumbered}
+## Conclusion {#sec-conc}
 
-### Declaration of interest statement {.unnumbered}
+## Supplementary {.unnumbered}
+
+R package [@messy]
+
+## Acknowledgments {.unnumbered}
+
+## Declaration of interest statement {.unnumbered}
 
 The authors report there are no competing interests to declare.
 
-### Data availability statement {.unnumbered}
+## Data availability statement {.unnumbered}
 
 The source code for the `messy` R package can be found on GitHub at [github.com/nrennie/messy](https://github.com/nrennie/messy).
 
-### References {.unnumbered}
+## References {.unnumbered}
 
 ::: {#refs}
 :::
