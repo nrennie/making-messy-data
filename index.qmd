@@ -20,8 +20,11 @@ format:
 execute: 
   echo: true
   eval: true
+  warning: false
 keywords:
   - real world data
+  - randomness
+  - data issues
 abstract: "Equipping statistics and data science students with the data wrangling skills necessary to work with real data is essential. Real data can often include typos, missing values encoded in strange ways, unusual spaces in words, or other factors. Example data sets designed for teaching often lack many of these messy properties of real data. At the same time, publicly available real data can be too messy for teaching in a time-constrained environment. This paper presents an R package to modify existing, clean teaching datasets to include a variety of characteristics often found in real data. This allows educators to continue using the same example data sets for teaching, but gives them the opportunity to implicitly teach data wrangling skills, using data with a controlled amount of messiness."
 ---
 
@@ -46,6 +49,8 @@ example_data <- tibble::tribble(
 
 ## Introduction {#sec-intro}
 
+### Motivation
+
 When teaching examples using R, instructors often using nice datasets - but these aren't very realistic, and aren't what students will later encounter in the real world. Real datasets might contain issues such as typos, missing values encoded in strange ways, or unexpected blank spaces. The {messy} R package takes a clean dataset, and randomly adds these things in - giving students the opportunity to practice their data cleaning and wrangling skills without having to change all of your examples.
 often derived from human error or incompatibility between software versions  
 
@@ -53,20 +58,21 @@ why teach data wrangling
 why it's hard for teachers
 
 often not a course on data wrangling, students often expected to pick it up as they go along and worse already know how to 
-AI?
 .... highlight the importance of "if an analyst cannot wrangle data in a form to answer a statistical question, their utility may be limited" @Hardin2015
 
-toy data, too easy and analyses often easy to obtain online - no opportunity to pratcice data wrangling
-real data may not able to share for ethical reasons as in the case of healthcare data. or have undergone stat disclosure - lmiting the type of analysis
-real data when can shrae might be too messy - students spending too long on wrangling part if not key objective "Filtering, aggregating, cleaning, and other preprocessing could be needed; presenting an opportunity to introduce students to data management and data wrangling." @Rivera2019
-controlled messiness
+### Existing teaching data
 
-other tools for generating data 
+Teaching-specific resources
+In R, ... titanic, mtcars, iris, palmerpenguins
+toy data, too easy and analyses 
+Further, for many widely-used teaching datasets such as `iris` or `titanic`, there are extensive analyses which are publicly available. Though these public analyses may be useful when learning syntax, they also provide temptation for students to bypass the critical thinking and problem-solving skills necessary for real-world data work by using ... or AI-generated ... . Introducing messier, more variable datasets ensures that students engage more with data wrangling processes, rather than relying on pre-existing solutions.
+
+If the aim is to provide students with opportunities to learn how to work with real data, the natural suggestion may be to simply use real data when teaching. @Rivera2019 notes that when teaching using real data, "filtering, aggregating, cleaning, and other preprocessing could be needed; presenting an opportunity to introduce students to data management and data wrangling." However, using real data in teaching presents several challenges. In some cases, real datasets cannot be shared due to ethical concerns, such as those in healthcare. They may also have undergone statistical disclosure control before becoming publicly available, limiting the types of analyses that they can be used to demonstrate. Even when real data can be shared, it is often too complex or messy for instructional use. If data wrangling is not the primary learning objective, students may spend excessive time on preprocessing rather than focusing on analytical concepts. Instructors may spend time pre-cleaning the data to control the amount of messiness, to give a real but ... . Striking a balance between realism and usability is essential to ensure students develop practical skills without being overwhelmed by unnecessary complexity.
+
+other tools for generating data, simulation
 R scripts
 @McSweeney2024
 
-existing data sets
-titanic, mtcars, iris, palmerpenguins
 
 ## Materials and methods {#sec-methods}
 
@@ -80,7 +86,7 @@ missing values (represented in different ways) In R [@RCore], but in other ... m
 
 encoded multiple ways in smae column - different meaning
 
-#### Probs deriving from ree text
+#### Problems deriving from free text responses
 
 Free text, or survey data that is updated 
 encourage visualisation to spot these errors
@@ -88,6 +94,7 @@ encourage visualisation to spot these errors
 spaces
 
 case 
+- especially when the percentage of typos is small, and not easily spotted by visual inspection
 
 
 ### R package design
@@ -122,15 +129,14 @@ funcs <- readr::read_csv("functions.csv")
 knitr::kable(funcs)
 ```
 
-
-
 ## Results {#sec-res}
 
 ### Example data
 
 ```{r}
-#| label: show-example-data
-example_data
+#| label: tbl-show-example-data
+#| tbl-cap: "Initial clean data set with three columns, including character strings, numeric, and binary variables."
+tinytable::tt(example_data, width = 1, theme = "bootstrap")
 ```
 
 
@@ -139,7 +145,8 @@ example_data
 #| message: false
 library(messy)
 set.seed(1234)
-messy(example_data)
+messy(example_data) |> 
+  knitr::kable()
 ```
 
 ```{r}
@@ -150,6 +157,9 @@ example_data |>
   make_missing(cols = c("x", "y"), missing = c(NA, 999)) |> 
   add_whitespace(cols = "month", messiness = 0.5)
 ```
+
+### Types of data wrangling tasks
+
 
 
 ## Discussion {#sec-disc}
@@ -169,6 +179,8 @@ also useful for classes on modelling missing data
 R package [@messy]
 
 ## Acknowledgments {.unnumbered}
+
+contributors
 
 ## Declaration of interest statement {.unnumbered}
 
