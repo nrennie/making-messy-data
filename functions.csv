@@ -1,4 +1,0 @@
-function,options,defaults
-make_missing,messiness,0.1
-change_case,messiness,0.1
-add_whitespace,messiness,0.1
