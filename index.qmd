@@ -122,7 +122,7 @@ The following functions are available in the 'messy' package:
 
 brief intro
 
-### An application to a toy, example data
+### An application to a toy, example dataset
 
 To illustrate the use of the `messy()` function and how its functions affect the data set, we use a small toy, example dataset as input. As seen in @tbl-show-example, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns. 
 
@@ -202,7 +202,7 @@ variable types @fig-visdat
 
 ```{r}
 #| label: fig-visdat
-#| fig-asp: 0.5
+#| fig-asp: 0.7
 #| fig-cap: "Visualisation of column types in the original `palmerpenguins` data (left) and a 'messy' version of the `palmerpenguins` data (right)."
 g1 <- vis_dat(penguins, sort_type = FALSE) +
   scale_fill_brewer(
