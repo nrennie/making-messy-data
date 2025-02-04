@@ -1,3 +1,9 @@
-# R package for creating {messy} data
+# Making 'messy' Data: An R Package for Teaching Data Wrangling with Realistic Data
 
-Note to self: when completed, move to a tab in the {messy} package pkgdown documentation.
+This repository contains the source code for *Making 'messy' Data: An R Package for Teaching Data Wrangling with Realistic Data*.
+
+Requirements:
+
+* This manuscript is built with [Quarto](https://quarto.org/).
+* It uses `R version 4.4.2 (2024-10-31 ucrt)`.
+* R package versions are controlled using [renv](https://rstudio.github.io/renv/articles/renv.html).
