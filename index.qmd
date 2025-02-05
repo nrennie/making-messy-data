@@ -108,7 +108,11 @@ The following functions are available in the 'messy' package:
 * `make_missing()`: This function randomly adds missing values into the dataset. The default is to randomly replace values with `NA`, the standard representation of missing values in R.
 * `add_whitespace()`: This function randomly adds white spaces at the beginning or end of character strings. This type of error is often difficult to recognise by eye, and so this provides students with the opportunity to develop data wrangling processes for identifying unique values.
 * `change_case()`: This function randomly changes the case of character strings between lowercase, uppercase, and title case. This results in small variations of the way that category values are recorded.
-* `messy()`: 
+* `add_special_chars()`: This function randomly adds special characters, such as `#`, `$` or `, `, to character strings.
+
+The following also wraps several of the above modifications into a single, easy-to-use function:
+
+* `messy()`: This function applies the `make_missing()`, `add_whitespace()`, `change_case()`, and `add_special_chars()` functions to the default columns with default parameters.
 
 ### User options
 
@@ -117,6 +121,7 @@ The `messy()` function makes it easy to modify a dataset in one line with limite
 * **Columns to adjust**: By default, missing values are added to all columns, and white spaces and case changes are made to all character or factor columns. However, users may specify a specific set of columns to modify. This also allows users to vary which functions and parameter values are applied to each column. 
 * **Degree of messiness**: The default is to modify each value in a column with a probability of 10%. The can be varied to create more or less common errors.
 * **Missing value representation**: The default representation of missing values is `NA`,  but users may specify a different value, or combination of values. For example, in numeric columns they may choose to use `0` or `999` alongside `NA`, and for character strings they may choose empty strings or a single space.
+* **Case change type**: By default, case changes are applied on the word level i.e. the case of an entire word is changed. User may alternatively choose to apply case changes on the letter level, resulting in increased variability in character string representation.
 * **Combination of functions**: Since the functions are designed to be used in a piped workflow, it's easy for users to define and apply a custom combination of functions to a variety of columns in the data.
 
 ## Results {#sec-res}
@@ -133,7 +138,7 @@ To illustrate the use of the `messy()` function and how its functions affect the
 example_data
 ```
 
-importance of setting a seed
+Running the `messy` function on this toy data results in the modifications seen in @tbl-show-example-data.
 
 ```{r}
 #| label: tbl-show-example-data
@@ -144,6 +149,10 @@ set.seed(12345)
 example_data |>
   messy()
 ```
+
+As described in @sec-methods, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in @tbl-piping, a user has applied the `make_missing()` function to the `month` column with a missing value of an empty space, and to the `x` and `y` columns with missing values of `NA` and `999`. The `add_whitespace()` function has then also been applied to the `month` column, with a probability of 50% to create an increase in the number of modifications.
+
+This results in ...
 
 ```{r}
 #| label: tbl-piping
