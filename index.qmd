@@ -44,25 +44,6 @@ knitr::knit_hooks$set(chunk = function(x, options) {
 })
 ```
 
-```{r}
-#| label: make-example-data
-#| echo: false
-example_data <- tibble::tribble(
-  ~month, ~x, ~y,
-  "January", 2.21, 1L,
-  "January", 2.29, 1L,
-  "January", 1.46, 0L,
-  "February", 0.55, 1L,
-  "February", 0.06, 0L,
-  "February", 0.03, 1L,
-  "March", 0.11, 1L,
-  "March", 0.13, 1L,
-  "April", 0.63, 1L,
-  "April", 1.39, 0L
-)
-```
-
-
 ## Introduction {#sec-intro}
 
 Data wrangling is a fundamental skill in data analysis, yet it is often not explicitly taught as a standalone course. Instead, students are frequently expected to acquire these skills informally or are assumed to already possess them. This presents a challenge, as students may struggle with data preparation tasks that are essential for meaningful analysis. As @Hardin2015 emphasize, ‘if an analyst cannot wrangle data in a form to answer a statistical question, their utility may be limited.’ Ensuring that students develop these skills is therefore crucial for their ability to engage effectively with real-world data.
@@ -106,7 +87,7 @@ As with any package or function that utilises random variables, these functions 
 The following functions are available in the 'messy' package:
 
 * `make_missing()`: This function randomly adds missing values into the dataset. The default is to randomly replace values with `NA`, the standard representation of missing values in R.
-* `add_whitespace()`: This function randomly adds white spaces at the beginning or end of character strings. This type of error is often difficult to recognise by eye, and so this provides students with the opportunity to develop data wrangling processes for identifying unique values.
+* `add_whitespace()`: This function randomly adds white spaces at the end of character strings, or converts numeric columns to characters and then adds spaces. This type of error is often difficult to recognise by eye, and so this provides students with the opportunity to develop data wrangling processes for identifying unique values.
 * `change_case()`: This function randomly changes the case of character strings between lowercase, uppercase, and title case. This results in small variations of the way that category values are recorded.
 * `add_special_chars()`: This function randomly adds special characters, such as `#`, `$` or `, `, to character strings.
 
@@ -135,14 +116,27 @@ To illustrate the use of the `messy()` function and how its functions affect the
 ```{r}
 #| label: tbl-show-example
 #| tbl-cap: "Initial clean data set with three columns, including character strings, numeric, and binary variables."
+example_data <- tibble::tribble(
+  ~month, ~x, ~y,
+  "January", 2.21, 1L,
+  "January", 2.29, 1L,
+  "January", 1.46, 0L,
+  "February", 0.55, 1L,
+  "February", 0.06, 0L,
+  "February", 0.03, 1L,
+  "March", 0.11, 1L,
+  "March", 0.13, 1L,
+  "April", 0.63, 1L,
+  "April", 1.39, 0L
+)
 example_data
 ```
 
-Running the `messy` function on this toy data results in the modifications seen in @tbl-show-example-data.
+Running the `messy()` function on this toy data results in the modifications seen in @tbl-show-example-data. The `month` column has had spaces and special characters added as well as case changes, and the `x` and `y` columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.
 
 ```{r}
 #| label: tbl-show-example-data
-#| tbl-cap: "The result of running `messy()` function on the clean data set, which adds spaces to some of the "
+#| tbl-cap: "The result of running `messy()` function on the clean data set, which adds spaces, special characters, and missing values to the columns."
 #| message: false
 library(messy)
 set.seed(12345)
@@ -152,11 +146,11 @@ example_data |>
 
 As described in @sec-methods, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in @tbl-piping, a user has applied the `make_missing()` function to the `month` column with a missing value of an empty space, and to the `x` and `y` columns with missing values of `NA` and `999`. The `add_whitespace()` function has then also been applied to the `month` column, with a probability of 50% to create an increase in the number of modifications.
 
-This results in ...
+In this example, this results in more subtle modifications. The numeric column remains numeric, and the integer column becomes numeric, making it more difficult to identify that something is not quite correct with the data. The changes to the 'month' column are also more difficult to identify by eye, using only additional spaces at the end of words. If viewing the data in a spreadsheet format, these inconsistencies are harder to spot by eye, and can create a nice motivational exercises for using programming languages for data processing, alongside data wrangling tasks.
 
 ```{r}
 #| label: tbl-piping
-#| tbl-cap: "The result of running custom function on the clean data set, which adds spaces to some of the "
+#| tbl-cap: "The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
 set.seed(12345)
 example_data |>
   make_missing(cols = "month", missing = " ") |>
@@ -166,9 +160,9 @@ example_data |>
 
 ### Application to {palmerpenguins}
 
-To illustrate the use of the 'messy' package on a more realistically sized dataset, we use the 'palmerpenguins' dataset [@palmerpenguins] as an example. The 'palmerpenguins' dataset provides measurements of penguins from three species (Adélie, Chinstrap, and Gentoo) collected from three islands in the Palmer Archipelago, Antarctica. It includes variables such as species, island, bill length and depth, flipper length, body mass, and sex. The dataset is commonly used in data science education, supporting lessons in data visualisation, statistical modelling, and machine learning.
+To illustrate the use of the 'messy' package on a more realistically sized dataset, the 'palmerpenguins' dataset [@palmerpenguins] is used as an example. The 'palmerpenguins' dataset provides measurements of penguins from three species (Adélie, Chinstrap, and Gentoo) collected from three islands in the Palmer Archipelago, Antarctica. It includes variables such as species, island, bill length and depth, flipper length, body mass, and sex. The dataset is commonly used in data science education, supporting lessons in data visualisation, statistical modelling, and machine learning.
 
-apply 
+In this example, the `make_missing()` function is applied to the `island` and `body_mass_g` columns, with a blank space and `999` used to represent missing data, respectively. The `add_whitespace()` and `change_case()` functions are then applied to the `species` column, with the case change applied with a probability of 1%.
 
 ```{r}
 #| label: messy-penguins
@@ -181,41 +175,56 @@ messy_penguins <- penguins |>
   change_case(cols = "species", messiness = 0.01)
 ```
 
-The 'visdat' package [@visdat] is commonly used to visualise the structure of 
-visualisiong missing data  commonly used , alongside naniar. These packages assume @fig-vis-missing
+To demonstrate how the application of the 'messy' package can be used to create exercises and challenges for students, the data can be visualised using common data exploration charts. 
+
+The 'visdat' package [@visdat] is commonly used to visualise the structure of datasets, and can be used to visualise missing data. By default, the package assumes that missing values are represented by `NA`. @fig-vis-missing shows the output of visualising missing data for the original 'palmerpenguins' dataset and the 'messy' version (with the default `NA` missing values assumed, and the correct encoding used). The first two visualisations appear identical due to the non-standard representation of missing values in the modified columns. This highlights a common situation where students may start out with good intentions to explore patterns in missing values, but fail to identify how missing values have been encoded in the data and therefore miss values.
 
 ```{r}
 #| label: fig-vis-missing
-#| fig-asp: 0.7
+#| fig-asp: 0.6
 #| fig-width: 6.5
-#| fig-cap: "Visualisation of missing values in the original `palmerpenguins` data (left) and a 'messy' version of the `palmerpenguins` data (right)."
+#| fig-cap: "Visualisation of missing values in the original `palmerpenguins` data (a), a 'messy' version of the `palmerpenguins` data with default settings (b), and with correct settings (c)."
 library(visdat)
 library(ggplot2)
+library(dplyr)
 library(patchwork)
 g1 <- vis_miss(penguins) +
+  labs(caption = "(a) Original data") +
   theme(
-    text = element_text(size = 13)
+    text = element_text(size = 13),
+    plot.caption = element_text(hjust = 0.5)
   )
 g2 <- vis_miss(messy_penguins) +
+  labs(caption = "(b) 'messy' data,\nmissing NA") +
   theme(
-    text = element_text(size = 13)
+    text = element_text(size = 13),
+    plot.caption = element_text(hjust = 0.5)
   )
-g1 + g2 + plot_layout(axes = "collect") &
+g3 <- messy_penguins |> 
+  mutate(
+    body_mass_g = if_else(body_mass_g == 999, NA, body_mass_g),
+    island = if_else(island == " ", NA, island)
+  ) |> 
+  vis_miss() +
+  labs(caption = "(c) 'messy' data,\nmissing 999 and ' '") +
+  theme(
+    text = element_text(size = 13),
+    plot.caption = element_text(hjust = 0.5)
+  )
+g1 + g2 + g3 + plot_layout(axes = "collect") &
   theme(
     legend.position = "bottom",
-    plot.margin = margin(l = 5, r = 10)
+    plot.margin = margin(l = 5, r = 12, b = 5)
   )
 ```
 
-note that the .. contains x% missing data, which is not highlighted using the default settings. students unused to ... may think they have identifed missing data, but they have not.
-
-variable types @fig-visdat
+The 'visdat' package can also be used to quickly visualise the column types in a dataset, and @fig-visdat shows the types of columns in the original and modified 'palmerpenguins' data. By providing the 'messy' version of the dataset, students are exposed to a wider range of column types. It's fairly common for columns to have the incorrect type, making recognising and addressing this issue an essential skill. For example, long category names are often recoded as numbers, and ordered categories (factors) are often left unordered and arranged alphabetically be default.
 
 ```{r}
 #| label: fig-visdat
 #| fig-asp: 0.6
 #| fig-width: 6.5
-#| fig-cap: "Visualisation of column types in the original `palmerpenguins` data (left) and a 'messy' version of the `palmerpenguins` data (right)."
+#| fig-cap: "Visualisation of column types in the original `palmerpenguins` data (a) and a 'messy' version of the `palmerpenguins` data (b)."
 g1 <- vis_dat(penguins, sort_type = FALSE) +
   scale_fill_brewer(
     palette = "Dark2",
@@ -223,9 +232,11 @@ g1 <- vis_dat(penguins, sort_type = FALSE) +
     limits = c("character", "factor", "integer", "numeric", NA),
     drop = FALSE
   ) +
+  labs(caption = "(a) Original data") +
   theme(
     legend.position = "none",
-    text = element_text(size = 13)
+    text = element_text(size = 13),
+    plot.caption = element_text(hjust = 0.5)
   )
 g2 <- vis_dat(messy_penguins, sort_type = FALSE) +
   scale_fill_brewer(
@@ -234,36 +245,42 @@ g2 <- vis_dat(messy_penguins, sort_type = FALSE) +
     limits = c("character", "factor", "integer", "numeric", NA),
     drop = FALSE
   ) +
+  labs(caption = "(b) 'messy' data") +
   theme(
-    text = element_text(size = 13)
+    text = element_text(size = 13),
+    plot.caption = element_text(hjust = 0.5)
   )
 g1 + g2 + plot_layout(guides = "collect", axes = "collect")
 ```
 
-unique values
-As seen in @fig-barchart, mimicing the use of free-text, or iterating dropdown options
+When applying statistical methods using categorical columns, may students may assume that category values have been uniquely encoded. However, this is not always the case, and so learning how to aggregate category levels is 
+@fig-barchart shows the number of unique values in the `species` column of the 'palmerpenguins' data, before and after modification using the 'messy' package. Six additional formats of the category labels have been included, though these are only a small percentage of the whole column. This provides an opportunity for students to learn essential data cleaning techniques, such as removing leading and trailing whitespaces, standardising letter case, and reconciling inconsistencies in how the same values are encoded. 
 
 ```{r}
 #| label: fig-barchart
 #| fig-asp: 0.5
 #| fig-width: 6.5
-#| fig-cap: "Visualisation of unique values of the `species` column in the original `palmerpenguins` data (left) and a 'messy' version of the `palmerpenguins` data (right)."
+#| fig-cap: "Visualisation of unique values of the `species` column in the original `palmerpenguins` data (a) and a 'messy' version of the `palmerpenguins` data (b)."
 g1 <- ggplot(
   data = penguins,
   mapping = aes(y = species)
 ) +
   geom_bar() +
-  theme_bw(base_size = 13)
+  labs(caption = "(a) Original data") +
+  theme_bw(base_size = 13) +
+  theme(plot.caption = element_text(hjust = 0.5))
 g2 <- ggplot(
   data = messy_penguins,
   mapping = aes(y = species)
 ) +
   geom_bar() +
-  theme_bw(base_size = 13)
+  labs(caption = "(b) 'messy' data") +
+  theme_bw(base_size = 13) +
+  theme(plot.caption = element_text(hjust = 0.5))
 g1 + g2 + plot_layout(axes = "collect")
 ```
 
-This provides an opportunity for students to learn essential data cleaning techniques, such as removing leading and trailing whitespace, standardising letter case, and reconciling inconsistencies in how the same values are encoded. It also gives educators the opportunity to emphasise the use of visualisation not only as a tool for data exploration but also as a crucial step in validating and identifying inconsistencies in data.
+These examples highlight how the 'messy' package may be used to modify datasets that instructors already use, to include different types of data wrangling challenges. It also gives educators the opportunity to emphasise the use of visualisation not only as a tool for data exploration but also as a crucial step in validating and identifying inconsistencies in data.
 
 ## Discussion {#sec-disc}
 
