@@ -308,7 +308,7 @@ The authors report there are no competing interests to declare.
 
 ## Data availability statement {.unnumbered}
 
-The source code for the 'messy' R package can be found on GitHub at [github.com/nrennie/messy](https://github.com/nrennie/messy). The source code and data for the examples can also be found on GitHub at [github.com/nrennie/making-messy-data](https://github.com/nrennie/making-messy-data). The `penguins` data is available through the 'palmerpenguins' R package [@palmerpenguins].
+The source code for the 'messy' R package can be found on GitHub at [github.com/nrennie/messy](https://github.com/nrennie/messy). The source code and data for the examples can also be found on GitHub at [github.com/nrennie/making-messy-data](https://github.com/nrennie/making-messy-data), with a manuscript preview available at [nrennie.rbind.io/making-messy-data](https://nrennie.rbind.io/making-messy-data). The `penguins` data is available through the 'palmerpenguins' R package [@palmerpenguins].
 
 ## References {.unnumbered}
 
