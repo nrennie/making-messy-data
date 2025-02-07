@@ -4,3 +4,4 @@ format:
   jasa-html:
     number-sections: true
     format-links: false
+    toc: true

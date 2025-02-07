@@ -27,17 +27,11 @@ jobs:
         with:
           cache-version: 1
 
-      - name: Render HTML document
-        uses: quarto-dev/quarto-actions/render@v2
-        with:
-          path: index.qmd
-          to: html
-
       - name: Publish HTML version
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: gh-pages
           path: index.qmd
-          render: false
+          to: html
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
