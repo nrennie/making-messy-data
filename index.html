@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Nicola Rennie">
+<meta name="dcterms.date" content="2025-02-07">
+<meta name="keywords" content="real-world data, randomness, data issues, statistics">
+
+<title>Making ‘messy’ Data: An R Package for Teaching Data Wrangling with Realistic Data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-intro" id="toc-sec-intro" class="nav-link active" data-scroll-target="#sec-intro"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#sec-background" id="toc-sec-background" class="nav-link" data-scroll-target="#sec-background"><span class="header-section-number">2</span> Background</a>
+  <ul class="collapse">
+  <li><a href="#existing-datasets-for-teaching" id="toc-existing-datasets-for-teaching" class="nav-link" data-scroll-target="#existing-datasets-for-teaching"><span class="header-section-number">2.1</span> Existing datasets for teaching</a></li>
+  <li><a href="#common-data-issues" id="toc-common-data-issues" class="nav-link" data-scroll-target="#common-data-issues"><span class="header-section-number">2.2</span> Common data issues</a></li>
+  </ul></li>
+  <li><a href="#sec-methods" id="toc-sec-methods" class="nav-link" data-scroll-target="#sec-methods"><span class="header-section-number">3</span> Methodology</a>
+  <ul class="collapse">
+  <li><a href="#functions-available" id="toc-functions-available" class="nav-link" data-scroll-target="#functions-available"><span class="header-section-number">3.1</span> Functions available</a></li>
+  <li><a href="#user-options" id="toc-user-options" class="nav-link" data-scroll-target="#user-options"><span class="header-section-number">3.2</span> User options</a></li>
+  </ul></li>
+  <li><a href="#sec-res" id="toc-sec-res" class="nav-link" data-scroll-target="#sec-res"><span class="header-section-number">4</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#application-to-a-toy-dataset" id="toc-application-to-a-toy-dataset" class="nav-link" data-scroll-target="#application-to-a-toy-dataset"><span class="header-section-number">4.1</span> Application to a toy dataset</a></li>
+  <li><a href="#application-to-palmerpenguins" id="toc-application-to-palmerpenguins" class="nav-link" data-scroll-target="#application-to-palmerpenguins"><span class="header-section-number">4.2</span> Application to {palmerpenguins}</a></li>
+  </ul></li>
+  <li><a href="#sec-disc" id="toc-sec-disc" class="nav-link" data-scroll-target="#sec-disc"><span class="header-section-number">5</span> Discussion</a></li>
+  <li><a href="#supplementary" id="toc-supplementary" class="nav-link" data-scroll-target="#supplementary">Supplementary</a></li>
+  <li><a href="#acknowledgments" id="toc-acknowledgments" class="nav-link" data-scroll-target="#acknowledgments">Acknowledgments</a></li>
+  <li><a href="#declaration-of-interest-statement" id="toc-declaration-of-interest-statement" class="nav-link" data-scroll-target="#declaration-of-interest-statement">Declaration of interest statement</a></li>
+  <li><a href="#data-availability-statement" id="toc-data-availability-statement" class="nav-link" data-scroll-target="#data-availability-statement">Data availability statement</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="index.pdf"><i class="bi bi-file-pdf"></i>PDF (jasa)</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Making ‘messy’ Data: An R Package for Teaching Data Wrangling with Realistic Data</h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Nicola Rennie <a href="mailto:nrennie.research@gmail.com" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> <a href="https://orcid.org/0000-0003-4797-557X" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Lancaster University
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 7, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>Equipping students in statistics and data science with the necessary data wrangling skills to handle real-world data is a crucial aspect of their education. Real data, unlike the clean, structured examples often used in teaching, can include a variety of challenges such as typographical errors, missing values encoded in unconventional ways, unexpected spaces in text, or other inconsistencies that stem from human error or software incompatibility. These issues are common in real datasets and are essential for students to learn how to address in order to develop the practical skills needed for professional data analysis.</p>
+    <p>However, while real data offers these valuable learning opportunities, it can also be too messy and unpredictable to be useful in a time-constrained classroom environment. Teaching with such data may overwhelm students or detract from the core statistical concepts. To address this, this paper presents an R package designed to introduce controlled levels of messiness into existing, clean teaching datasets. This package allows educators to retain the structure and simplicity of familiar teaching examples while providing students with a realistic, manageable data cleaning experience. By using this approach, instructors can implicitly teach critical data wrangling techniques, preparing students for the complexities they will encounter in real-world data analysis.</p>
+  </div>
+</div>
+
+<div>
+  <div class="keywords">
+    <div class="block-title">Keywords</div>
+    <p>real-world data, randomness, data issues, statistics</p>
+  </div>
+</div>
+
+</header>
+
+
+<section id="sec-intro" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="sec-intro"><span class="header-section-number">1</span> Introduction</h2>
+<p>Data wrangling is a fundamental skill in data analysis, yet it is often not explicitly taught as a standalone course. Instead, students are frequently expected to acquire these skills informally or are assumed to already possess them. This presents a challenge, as students may struggle with data preparation tasks that are essential for meaningful analysis. As <span class="citation" data-cites="Hardin2015">Horton and Hardin (<a href="#ref-Hardin2015" role="doc-biblioref">2015</a>)</span> emphasize, ‘if an analyst cannot wrangle data in a form to answer a statistical question, their utility may be limited.’ Ensuring that students develop these skills is therefore crucial for their ability to engage effectively with real-world data. The use of concrete examples can also help students to better understand abstract concepts, which is often a common difficulty <span class="citation" data-cites="Silva2025">(<a href="#ref-Silva2025" role="doc-biblioref">Silva and Sarnecka 2025</a>)</span>.</p>
+<p>There is often a temptation when teaching statistical methods for instructors to use <em>nice</em> datasets. However, these datasets are not very realistic, and do not represent the data that students will later encounter in the real world. The gap between examples used in teaching and introductory textbooks and the real world is notably large <span class="citation" data-cites="Hsu2022">(<a href="#ref-Hsu2022" role="doc-biblioref">Hsu et al. 2022</a>)</span>. Real datasets often contain issues such as typographical errors, missing values encoded in strange ways, or unexpected values. These data issues often derive from human error, poor data collection processes, or errors in pre-processing with software. Therefore, these issues are likely to arise in any analytical project, and so it is essential that students practice skills to address them. Especially since it can be harder for students to identify the mistakes they have made in data wrangling processes, compared to other tasks such as visualisation <span class="citation" data-cites="Rundel2021">(<a href="#ref-Rundel2021" role="doc-biblioref">Çetinkaya-Rundel and Ellison 2021</a>)</span>.</p>
+<p>Though some programmes may include data wrangling as a standalone course, there are many opportunities to integrate wrangling practice into other courses where students work with data. However, this can present challenges for instructors, who may not view data wrangling as part of their teaching responsibilities or may already struggle to cover core subject material within the constraints of a semester. Many available teaching datasets are already clean, and instructors often lack the time to source or modify datasets to better reflect real-world complexities. As a result, despite the importance of data wrangling skills, finding practical ways to incorporate them into existing coursework remains a significant challenge.</p>
+</section>
+<section id="sec-background" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-background"><span class="header-section-number">2</span> Background</h2>
+<p>The use of data in teaching statistics and data science has a long history, dating back to the early days of statistical education when small, manually collected datasets were used to illustrate key concepts. Classic datasets, such as the <code>iris</code> dataset have been widely used for decades. As methodology and technology evolve, it is essential that the examples used in teaching effectively prepare students for the modern world of data.</p>
+<section id="existing-datasets-for-teaching" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="existing-datasets-for-teaching"><span class="header-section-number">2.1</span> Existing datasets for teaching</h3>
+<p>A range of teaching-specific resources exists for statistics and data science education, including domain-specific datasets and instructional tools. In the health sciences, for example, the Teaching of Statistics in the Health Sciences <span class="citation" data-cites="TSHSResourcesPortal">(<a href="#ref-TSHSResourcesPortal" role="doc-biblioref">Teaching of Statistics in the Health Sciences 2025</a>)</span> resources portal provides datasets for teaching purposes, derived from real patient data. Many datasets, including <code>titanic</code>, <code>mtcars</code>, <code>iris</code>, and <code>palmerpenguins</code>, are also available through R <span class="citation" data-cites="RCore">(<a href="#ref-RCore" role="doc-biblioref">R Core Team 2024</a>)</span> which is commonly used for teaching practical data analysis skills in statistics courses <span class="citation" data-cites="Zavez2025">(<a href="#ref-Zavez2025" role="doc-biblioref">Zavez and Harel 2025</a>)</span>. However, these datasets are often pre-cleaned or overly simplistic, making analyses too easy and limiting students’ exposure to real-world data challenges. Additionally, widely used datasets such as <code>iris</code> and <code>titanic</code> have extensive publicly available analyses, which, while helpful for learning syntax, may encourage students to rely on existing solutions rather than developing critical thinking and problem-solving skills. This issue is further amplified by the increasing use of AI-generated solutions, which allow students to bypass key aspects of data analysis. Introducing messier, more variable datasets helps ensure that students actively engage with data wrangling processes, rather than simply reproducing pre-existing approaches.</p>
+<p>If the aim is to provide students with opportunities to learn how to work with real data, the natural suggestion may be to simply use real data when teaching. <span class="citation" data-cites="Rivera2019">Roberto Rivera and Torres-Saavedra (<a href="#ref-Rivera2019" role="doc-biblioref">2019</a>)</span> notes that when teaching using real data, “filtering, aggregating, cleaning, and other pre-processing could be needed; presenting an opportunity to introduce students to data management and data wrangling.” However, using real data in teaching presents several challenges. In some cases, real datasets cannot be shared due to ethical concerns, such as those in healthcare. They may also have undergone statistical disclosure control before becoming publicly available, limiting the types of analyses that they can be used to demonstrate. Even when real data can be shared, it is often too complex or messy for instructional use. If data wrangling is not the primary learning objective, students may spend excessive time on pre-processing rather than focusing on analytical concepts. Instructors may spend time pre-cleaning data to control the level of messiness, to strike a balance between realism and usability, allowing students to develop practical skills without being overwhelmed by unnecessary complexity. However, this creates an additional, potentially time-intensive task for instructors when identifying and preparing data for teaching. This can be further complicated by the fact that publicly-available datasets shared in online repositories do not always have data documentation <span class="citation" data-cites="Mihaescu2021">(<a href="#ref-Mihaescu2021" role="doc-biblioref">Mihaescu and Popescu 2021</a>)</span>.</p>
+<p>An alternative approach to obtaining data for teaching purposes is for educators to generate their own data through the use of simulation. Simulated datasets allow educators to control specific characteristics of the data, including the types of variables and how much wrangling by students would be required to make it usable for analysis. As discussed in <span class="citation" data-cites="McSweeney2024">Casement and McSweeney (<a href="#ref-McSweeney2024" role="doc-biblioref">2024</a>)</span>, this approach provides flexibility in dataset design and therefore can be more pedagogically effective. However, the use of simulation to generate data requires that educators have some expertise in simulation and enough time to develop their own data-generating processes, which is often not the case. Lack of time for creating customised datasets, is a particular constraint when educators require datasets with different features for teaching different analytical methods over the course of a programme. Though <span class="citation" data-cites="Shutes2009">Shutes (<a href="#ref-Shutes2009" role="doc-biblioref">2009</a>)</span> presents R functions for simulating datasets for individual student assessments, these may not be relevant for all methodologies or application areas. Further, if not performed carefully, simulated data may also be too clean and have too little noise to be realistic.</p>
+<p>This highlights the need for an approach to obtaining data for teaching purposes that has realistic features and data issues to allow students to practice data wrangling. At the same time, this approach should be quick and easy for instructors to use for data generation, and should ensure that the resulting data is not overly complex for the teaching scenario.</p>
+</section>
+<section id="common-data-issues" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="common-data-issues"><span class="header-section-number">2.2</span> Common data issues</h3>
+<p>To best equip students with relevant data wrangling skills, it is important to identify which data issues they are most likely to encounter in the real world. As discussed in <span class="citation" data-cites="Lewis2024">Lewis (<a href="#ref-Lewis2024" role="doc-biblioref">2024</a>)</span>, common data issues that require pre-analysis cleaning include dealing with inconsistent date formats, poor variable name choices, missing data encoded in a variety of ways, duplicated rows, variables encoded in incorrect formats, and differing formats of the same variable value.</p>
+<p>Missing values are a common issue in data analysis. Though classes on handling and imputing missing values are not an uncommon feature of statistical modelling courses, the practice of initially identifying missing values in data is less common. In R <span class="citation" data-cites="RCore">(<a href="#ref-RCore" role="doc-biblioref">R Core Team 2024</a>)</span>, missing values are explicitly represented as <code>NA</code>. In other software they may be encoded in a variety formats such as empty strings, a single space, placeholder values like 999, or other arbitrary indicators. Additionally, even within the same dataset, different columns may use different conventions for missing data. In some cases, multiple encodings may appear within a single column, each carrying distinct meanings. It is essential that students gain experience in recognising these inconsistencies, as failure to do so may result in overlooking missing values - which even the best choice of imputation method cannot overcome.</p>
+<p>Text data, whether resulting from free-text responses or pre-defined categories, can often contain inconsistencies. This is particularly common in data originating from surveys, where open-ended questions may have been asked, or where questions and available answers have updated in different iterations of the survey. Other common sources of inconsistency in text data include variations in spacing, differences in letter case, and typographical errors. Visualisation techniques can be particularly useful for identifying these issues, as they help reveal patterns that may not be immediately apparent through visual inspection, especially when the proportion of such errors is small. However, many courses focus on teaching the use of data visualisation as a method of communicating results, and don’t allow enough time for data visualisation as a means of effective data validation <span class="citation" data-cites="Hsu2022 Hudiburgh2020">(<a href="#ref-Hsu2022" role="doc-biblioref">Hsu et al. 2022</a>; <a href="#ref-Hudiburgh2020" role="doc-biblioref">Hudiburgh and Garbinsky 2020</a>)</span>.</p>
+</section>
+</section>
+<section id="sec-methods" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-methods"><span class="header-section-number">3</span> Methodology</h2>
+<p>Given the need for a more effective, realistic approach to generating data for teaching, the use of the ‘messy’ R package is proposed. The package takes a clean dataset and randomly introduces common data issues such as missing values, typographic errors, and inconsistencies in data representation. This approach provides students with the opportunity to practice essential data cleaning and wrangling skills, without the need for instructors to modify or replace their existing teaching examples. By adding controlled messiness to familiar datasets, the package allows students to engage with realistic data in a structured and manageable way.</p>
+<p>The ‘messy’ package follows the principles of the tidyverse <span class="citation" data-cites="tidyverse">(<a href="#ref-tidyverse" role="doc-biblioref">Wickham et al. 2019</a>)</span>, offering separate functions that perform specific data de-cleaning tasks, where functions names are indicative of their purpose. For example, the <code>add_whitespace()</code> function adds additional white space to character strings. As in the ‘tidyverse’, these separate functions can be easily piped together to create flexible and efficient combinations of tasks. Additionally, the package includes a wrapper function, <code>messy()</code>, that simplifies the process of creating messy data, allowing users to apply multiple data modifications with a single command. This design ensures that the package is intuitive and consistent, making it easy for users to integrate into their existing teaching workflows.</p>
+<p>As with any package or function that utilises random variables, these functions require the user to set a seed to ensure their data generation is reproducible.</p>
+<section id="functions-available" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="functions-available"><span class="header-section-number">3.1</span> Functions available</h3>
+<p>The following functions are available in the ‘messy’ package:</p>
+<ul>
+<li><code>make_missing()</code>: Randomly adds missing values into the dataset. The default is to randomly replace values with <code>NA</code>, the standard representation of missing values in R.</li>
+<li><code>add_whitespace()</code>: Randomly adds white spaces at the end of character strings, or converts numeric columns to characters and then adds spaces. This type of error is often difficult to recognise by eye, and so this provides students with the opportunity to develop data wrangling processes for identifying unique values.</li>
+<li><code>change_case()</code>: Randomly changes the case of character strings between lowercase, uppercase, and title case. This results in small variations of the way that category values are recorded.</li>
+<li><code>add_special_chars()</code>: Randomly adds special characters, such as <code>#</code>, <code>$</code> or <code>,</code>, to character strings.</li>
+<li><code>duplicate_rows()</code>: Duplicates rows and inserts them into the data, either in order or at random.</li>
+<li><code>messy_date_formats()</code> / <code>messy_datetime_formats()</code>: Takes any date or date-time column and transforms it into a character column, sampling from any number of random of valid character representations.</li>
+<li><code>messy_datetime_tzones()</code>: Takes any number of date-time columns and changes their time zones either totally at random, or from a user-provided list of time zones.</li>
+<li><code>split_dates()</code> / <code>split_datetimes()</code>: These functions can split the “date” and “time” components of POSIXt columns and the “hour”, “month”, and “day” components of Date columns into multiple columns.</li>
+<li><code>messy_colnames()</code>: Adds special characters and randomly capitalises characters in the column names. Note that it is recommended to apply this function last, to allow selection of columns by their original names.</li>
+</ul>
+<p>The following also wraps several of the above modifications into a single, easy-to-use function:</p>
+<ul>
+<li><code>messy()</code>: This function applies the <code>make_missing()</code>, <code>add_whitespace()</code>, <code>change_case()</code>, and <code>add_special_chars()</code> functions to the default columns with default parameters.</li>
+</ul>
+</section>
+<section id="user-options" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="user-options"><span class="header-section-number">3.2</span> User options</h3>
+<p>The <code>messy()</code> function makes it easy to modify a dataset in one line with limited effort. However, there are several user options that can be changed to create more complex modifications:</p>
+<ul>
+<li><strong>Columns to adjust</strong>: By default, and depending on the function, modification is either applied to all columns, all character or factor columns, or all date and date-time columns. However, users may specify a specific set of columns to modify. This also allows users to vary which functions and parameter values are applied to each column.</li>
+<li><strong>Degree of messiness</strong>: The default is to modify each value in a column with a probability of 10%. The can be varied to create more or less common errors.</li>
+<li><strong>Missing value representation</strong>: The default representation of missing values is <code>NA</code>, but users may specify a different value, or combination of values. For example, in numeric columns they may choose to use <code>0</code> or <code>999</code> alongside <code>NA</code>, and for character strings they may choose empty strings or a single space.</li>
+<li><strong>Case change type</strong>: By default, case changes are applied on the word level i.e.&nbsp;the case of an entire word is changed. User may alternatively choose to apply case changes on the letter level, resulting in increased variability in character string representation.</li>
+<li><strong>Combination of functions</strong>: Since the functions are designed to be used in a piped workflow, it’s easy for users to define and apply a custom combination of functions to a variety of columns in the data.</li>
+</ul>
+</section>
+</section>
+<section id="sec-res" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sec-res"><span class="header-section-number">4</span> Results</h2>
+<p>To illustrate the way that the ‘messy’ package can be used to modify teaching for teaching purposes, it is applied to (i) a small, toy dataset, and (ii) the ‘palmerpenguins’ dataset commonly used in teaching.</p>
+<section id="application-to-a-toy-dataset" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="application-to-a-toy-dataset"><span class="header-section-number">4.1</span> Application to a toy dataset</h3>
+<p>To illustrate the use of the <code>messy()</code> function and how its functions affect the data set, we use a small toy, example dataset as input. As seen in <a href="#tbl-show-example" class="quarto-xref">Table&nbsp;1</a>, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns.</p>
+<div id="tbl-show-example" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Initial clean data set with three columns, including character strings, numeric, and binary variables.
+</figcaption>
+<div aria-describedby="tbl-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 3
+   month        x     y
+   &lt;chr&gt;    &lt;dbl&gt; &lt;int&gt;
+ 1 January   2.21     1
+ 2 January   2.29     1
+ 3 January   1.46     0
+ 4 February  0.55     1
+ 5 February  0.06     0
+ 6 February  0.03     1
+ 7 March     0.11     1
+ 8 March     0.13     1
+ 9 April     0.63     1
+10 April     1.39     0</code></pre>
+</div>
+</div>
+</figure>
+</div>
+<p>Running the <code>messy()</code> function on this toy data results in the modifications seen in <a href="#tbl-show-example-data" class="quarto-xref">Table&nbsp;2</a>. The <code>month</code> column has had spaces and special characters added as well as case changes, and the <code>x</code> and <code>y</code> columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.</p>
+<div id="tbl-show-example-data" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;2: The result of running <code>messy()</code> function on the clean data set, which adds spaces, special characters, and missing values to the columns.
+</figcaption>
+<div aria-describedby="tbl-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 3
+   month       x       y    
+   &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;
+ 1 "January"   "2.21 " "1 " 
+ 2 "Jan@ua^ry" "2.29 " "1"  
+ 3 "January "  "1.46"  "0"  
+ 4 "FEBRUARY"  "0.55"  "1"  
+ 5 ".February" "0.06"  "0"  
+ 6 "Februa(ry"  &lt;NA&gt;   "1"  
+ 7 "March"     "0.11"  &lt;NA&gt; 
+ 8 "Ma!rch"    "0.13 " "1"  
+ 9 "April"     "0.63"  "1"  
+10 "April"      &lt;NA&gt;   "0"  </code></pre>
+</div>
+</div>
+</figure>
+</div>
+<p>As described in <a href="#sec-methods" class="quarto-xref">Section&nbsp;3</a>, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in <a href="#tbl-piping" class="quarto-xref">Table&nbsp;3</a>, a user has applied the <code>make_missing()</code> function to the <code>month</code> column with a missing value of an empty space, and to the <code>x</code> and <code>y</code> columns with missing values of <code>NA</code> and <code>999</code>. The <code>add_whitespace()</code> function has then also been applied to the <code>month</code> column, with a probability of 50% to create an increase in the number of modifications.</p>
+<p>In this example, this results in more subtle modifications. The numeric column remains numeric, and the integer column becomes numeric, making it more difficult to identify that something is not quite correct with the data. The changes to the ‘month’ column are also more difficult to identify by eye, using only additional spaces at the end of words. If viewing the data in a spreadsheet format, these inconsistencies are harder to spot by eye, and can create a nice motivational exercises for using programming languages for data processing, alongside data wrangling tasks.</p>
+<div id="tbl-piping" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;3: The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings.
+</figcaption>
+<div aria-describedby="tbl-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 3
+   month          x     y
+   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;
+ 1 "January"   2.21     1
+ 2 "January "  2.29     1
+ 3 "January " NA        0
+ 4 "February"  0.55     1
+ 5 "February"  0.06     0
+ 6 "February"  0.03     1
+ 7 "March "    0.11     1
+ 8 "March"     0.13     1
+ 9 "April "    0.63     1
+10 "April"     1.39   999</code></pre>
+</div>
+</div>
+</figure>
+</div>
+</section>
+<section id="application-to-palmerpenguins" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="application-to-palmerpenguins"><span class="header-section-number">4.2</span> Application to {palmerpenguins}</h3>
+<p>To illustrate the use of the ‘messy’ package on a more realistically sized dataset, the ‘palmerpenguins’ dataset <span class="citation" data-cites="palmerpenguins">(<a href="#ref-palmerpenguins" role="doc-biblioref">Horst et al. 2020</a>)</span> is used as an example. The ‘palmerpenguins’ dataset provides measurements of penguins from three species (Adélie, Chinstrap, and Gentoo) collected from three islands in the Palmer Archipelago, Antarctica. It includes variables such as species, island, bill length and depth, flipper length, body mass, and sex. The dataset is commonly used in data science education, supporting lessons in data visualisation, statistical modelling, and machine learning.</p>
+<p>In this example, the <code>make_missing()</code> function is applied to the <code>island</code> and <code>body_mass_g</code> columns, with a blank space and <code>999</code> used to represent missing data, respectively. The <code>add_whitespace()</code> and <code>change_case()</code> functions are then applied to the <code>species</code> column, with the case change applied with a probability of 1%.</p>
+<p>To demonstrate how the application of the ‘messy’ package can be used to create exercises and challenges for students, the data can be visualised using common data exploration charts.</p>
+<p>The ‘visdat’ package <span class="citation" data-cites="visdat">(<a href="#ref-visdat" role="doc-biblioref">Tierney 2017</a>)</span> is commonly used to visualise the structure of datasets, and can be used to visualise missing data. By default, the package assumes that missing values are represented by <code>NA</code>. <a href="#fig-vis-missing" class="quarto-xref">Figure&nbsp;1</a> shows the output of visualising missing data for the original ‘palmerpenguins’ dataset and the ‘messy’ version (with the default <code>NA</code> missing values assumed, and the correct encoding used). The first two visualisations appear identical due to the non-standard representation of missing values in the modified columns. This highlights a common situation where students may start out with good intentions to explore patterns in missing values, but fail to identify how missing values have been encoded in the data and therefore miss values.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-vis-missing" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-vis-missing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-vis-missing-1.png" class="img-fluid figure-img" width="624">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vis-missing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Visualisation of missing values in the original <code>palmerpenguins</code> data (a), a ‘messy’ version of the <code>palmerpenguins</code> data with default settings (b), and with correct settings (c).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The ‘visdat’ package can also be used to quickly visualise the column types in a dataset, and <a href="#fig-visdat" class="quarto-xref">Figure&nbsp;2</a> shows the types of columns in the original and modified ‘palmerpenguins’ data. By providing the ‘messy’ version of the dataset, students are exposed to a wider range of column types. It’s fairly common for columns to have the incorrect type, making recognising and addressing this issue an essential skill. For example, long category names are often recoded as numbers, and ordered categories (factors) are often left unordered and arranged alphabetically be default.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-visdat" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-visdat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-visdat-1.png" class="img-fluid figure-img" width="624">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-visdat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Visualisation of column types in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>When applying statistical methods using categorical columns, may students may assume that category values have been uniquely encoded. However, this is not always the case, and so learning how to aggregate category levels is <a href="#fig-barchart" class="quarto-xref">Figure&nbsp;3</a> shows the number of unique values in the <code>species</code> column of the ‘palmerpenguins’ data, before and after modification using the ‘messy’ package. Six additional formats of the category labels have been included, though these are only a small percentage of the whole column. This provides an opportunity for students to learn essential data cleaning techniques, such as removing leading and trailing whitespaces, standardising letter case, and reconciling inconsistencies in how the same values are encoded.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-barchart" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-barchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-barchart-1.png" class="img-fluid figure-img" width="624">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-barchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Visualisation of unique values of the <code>species</code> column in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-disc" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="sec-disc"><span class="header-section-number">5</span> Discussion</h2>
+<p>These examples highlight how the ‘messy’ package may be used to modify datasets that instructors already use, to smoothly integrate different types of data wrangling challenges into their teaching. The exercises that can be developed from the modified, messy datasets give students experience of working with a wide range of data issues they are likely to later encounter in their analytical careers. It also gives educators the opportunity to emphasise the use of visualisation not only as a tool for data exploration, but also as a crucial step in validating and identifying inconsistencies in data.</p>
+<p>For instructors using publicly available datasets for assessment purposes, the random nature of the output from ‘messy’ can ensure that no two datasets are identical. This may be particularly useful in the assessment setting where students receive data with the same structure but unique values to reducing the likelihood of plagiarism, as described by <span class="citation" data-cites="Shutes2009">Shutes (<a href="#ref-Shutes2009" role="doc-biblioref">2009</a>)</span>.</p>
+<p>Although ‘messy’ is an R package, its usefulness extends beyond teaching R itself, as datasets can be saved as CSV files for use in other programming languages and software. Future work should develop a web application where educators can upload their own datasets, then download a ‘messy’ version in a variety of formats. The web application could also provide downloads of ‘messy’ versions of common datasets such as <code>palemerpenguins</code> or <code>titanic</code>. The ‘messy’ package is also valuable outside of teaching, for R developers who need datasets for testing functions and packages, as it introduces controlled inconsistencies that help evaluate robustness.</p>
+</section>
+<section id="supplementary" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="supplementary">Supplementary</h2>
+<p>R package. ‘messy’: Create Messy Data from Clean Data Frames <span class="citation" data-cites="messy">(<a href="#ref-messy" role="doc-biblioref">Rennie 2024</a>)</span>.</p>
+</section>
+<section id="acknowledgments" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="acknowledgments">Acknowledgments</h2>
+<p>The author is especially grateful to the R community and the wider open-source community for their positive response to the package’s initial release. Special thanks go to the early users who identified bugs or suggested new features, particularly Jack Davison, Athanasia Monika Mowinckel, and Philip Leftwich.</p>
+</section>
+<section id="declaration-of-interest-statement" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="declaration-of-interest-statement">Declaration of interest statement</h2>
+<p>The authors report there are no competing interests to declare.</p>
+</section>
+<section id="data-availability-statement" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="data-availability-statement">Data availability statement</h2>
+<p>The source code for the ‘messy’ R package can be found on GitHub at <a href="https://github.com/nrennie/messy">github.com/nrennie/messy</a>. The source code and data for the examples can also be found on GitHub at <a href="https://github.com/nrennie/making-messy-data">github.com/nrennie/making-messy-data</a>, with a manuscript preview available at <a href="https://nrennie.rbind.io/making-messy-data">nrennie.rbind.io/making-messy-data</a>. The <code>penguins</code> data is available through the ‘palmerpenguins’ R package <span class="citation" data-cites="palmerpenguins">(<a href="#ref-palmerpenguins" role="doc-biblioref">Horst et al. 2020</a>)</span>.</p>
+</section>
+<section id="references" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-McSweeney2024" class="csl-entry" role="listitem">
+Casement, C. J., and McSweeney, L. A. (2024), <span>“StatTeacherAssistant: An application for creating, adjusting, and checking the suitability of data sets for courses that incorporate introductory statistical methods,”</span> <em>Journal of Statistics and Data Science Education</em>, Taylor &amp; Francis, 32, 36–46. <a href="https://doi.org/10.1080/26939169.2023.2190009">https://doi.org/10.1080/26939169.2023.2190009</a>.
+</div>
+<div id="ref-Rundel2021" class="csl-entry" role="listitem">
+Çetinkaya-Rundel, M., and Ellison, V. (2021), <span>“A fresh look at introductory data science,”</span> <em>Journal of Statistics and Data Science Education</em>, Taylor &amp; Francis, 29, S16–S26. <a href="https://doi.org/10.1080/10691898.2020.1804497">https://doi.org/10.1080/10691898.2020.1804497</a>.
+</div>
+<div id="ref-palmerpenguins" class="csl-entry" role="listitem">
+Horst, A. M., Hill, A. P., and Gorman, K. B. (2020), <em><span class="nocase">palmerpenguins: Palmer Archipelago (Antarctica) penguin data</span></em>. <a href="https://doi.org/10.5281/zenodo.3960218">https://doi.org/10.5281/zenodo.3960218</a>.
+</div>
+<div id="ref-Hardin2015" class="csl-entry" role="listitem">
+Horton, N. J., and Hardin, J. S. (2015), <span>“Teaching the next generation of statistics students to <span>‘think with data’</span>: Special issue on statistics and the undergraduate curriculum,”</span> <em>The American Statistician</em>, ASA Website, 69, 259–265. <a href="https://doi.org/10.1080/00031305.2015.1094283">https://doi.org/10.1080/00031305.2015.1094283</a>.
+</div>
+<div id="ref-Hsu2022" class="csl-entry" role="listitem">
+Hsu, J. L., Jones, A., Lin, J.-H., and Chen, Y.-R. (2022), <span>“Data visualization in introductory business statistics to strengthen students’ practical skills,”</span> <em>Teaching Statistics</em>, 44, 21–28. https://doi.org/<a href="https://doi.org/10.1111/test.12291">https://doi.org/10.1111/test.12291</a>.
+</div>
+<div id="ref-Hudiburgh2020" class="csl-entry" role="listitem">
+Hudiburgh, L. M., and Garbinsky, D. (2020), <span>“Data visualization: Bringing data to life in an introductory statistics course,”</span> <em>Journal of Statistics Education</em>, Taylor &amp; Francis, 28, 262–279. <a href="https://doi.org/10.1080/10691898.2020.1796399">https://doi.org/10.1080/10691898.2020.1796399</a>.
+</div>
+<div id="ref-Lewis2024" class="csl-entry" role="listitem">
+Lewis, C. (2024), <em><a href="https://datamgmtinedresearch.com/">Data management in large-scale education research</a></em>, CRC Press.
+</div>
+<div id="ref-Mihaescu2021" class="csl-entry" role="listitem">
+Mihaescu, M. C., and Popescu, P. S. (2021), <span>“Review on publicly available datasets for educational data mining,”</span> <em>WIREs Data Mining and Knowledge Discovery</em>, 11, e1403. https://doi.org/<a href="https://doi.org/10.1002/widm.1403">https://doi.org/10.1002/widm.1403</a>.
+</div>
+<div id="ref-RCore" class="csl-entry" role="listitem">
+R Core Team (2024), <em><a href="https://www.R-project.org/">R: A language and environment for statistical computing</a></em>, Vienna, Austria: R Foundation for Statistical Computing.
+</div>
+<div id="ref-messy" class="csl-entry" role="listitem">
+Rennie, N. (2024), <em><a href="https://CRAN.R-project.org/package=messy"><span class="nocase">messy: Create Messy Data from Clean Data Frames</span></a></em>.
+</div>
+<div id="ref-Rivera2019" class="csl-entry" role="listitem">
+Roberto Rivera, M. M., and Torres-Saavedra, P. A. (2019), <span>“Incorporating open data into introductory courses in statistics,”</span> <em>Journal of Statistics Education</em>, Taylor &amp; Francis, 27, 198–207. <a href="https://doi.org/10.1080/10691898.2019.1669506">https://doi.org/10.1080/10691898.2019.1669506</a>.
+</div>
+<div id="ref-Shutes2009" class="csl-entry" role="listitem">
+Shutes, K. (2009), <span>“A note on using individualised data sets for statistics coursework,”</span> <em>Technology Innovations in Statistics Education</em>, Taylor &amp; Francis, 3. <a href="https://doi.org/10.5070/T532000040">https://doi.org/10.5070/T532000040</a>.
+</div>
+<div id="ref-Silva2025" class="csl-entry" role="listitem">
+Silva, P. N., and Sarnecka, B. W. (2025), <span>“What do your students struggle with? A survey of statistics instructors,”</span> <em>Journal of Statistics and Data Science Education</em>, Taylor &amp; Francis, 0, 1–20. <a href="https://doi.org/10.1080/26939169.2025.2455560">https://doi.org/10.1080/26939169.2025.2455560</a>.
+</div>
+<div id="ref-TSHSResourcesPortal" class="csl-entry" role="listitem">
+Teaching of Statistics in the Health Sciences (2025), <span>“<a href="https://causeweb.org/tshs/">TSHS resources portal</a>.”</span>
+</div>
+<div id="ref-visdat" class="csl-entry" role="listitem">
+Tierney, N. (2017), <span>“<span class="nocase">visdat: Visualising Whole Data Frames</span>,”</span> <em>JOSS</em>, Journal of Open Source Software, 2, 355. <a href="https://doi.org/10.21105/joss.00355">https://doi.org/10.21105/joss.00355</a>.
+</div>
+<div id="ref-tidyverse" class="csl-entry" role="listitem">
+Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., Kuhn, M., Pedersen, T. L., Miller, E., Bache, S. M., Müller, K., Ooms, J., Robinson, D., Seidel, D. P., Spinu, V., Takahashi, K., Vaughan, D., Wilke, C., Woo, K., and Yutani, H. (2019), <span>“Welcome to the <span class="nocase">tidyverse</span>,”</span> <em>Journal of Open Source Software</em>, 4, 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+<div id="ref-Zavez2025" class="csl-entry" role="listitem">
+Zavez, K., and Harel, O. (2025), <span>“Teaching statistical concepts using computing tools: A review of the literature,”</span> <em>Journal of Statistics and Data Science Education</em>, Taylor &amp; Francis, 0, 1–21. <a href="https://doi.org/10.1080/26939169.2024.2445541">https://doi.org/10.1080/26939169.2024.2445541</a>.
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
