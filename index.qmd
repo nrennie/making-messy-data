@@ -284,15 +284,14 @@ g2 <- ggplot(
 g1 + g2 + plot_layout(axes = "collect")
 ```
 
-These examples highlight how the 'messy' package may be used to modify datasets that instructors already use, to include different types of data wrangling challenges. It also gives educators the opportunity to emphasise the use of visualisation not only as a tool for data exploration but also as a crucial step in validating and identifying inconsistencies in data.
 
 ## Discussion {#sec-disc}
 
-Although this is an R package, its usefulness extends beyond R, as datasets can be saved as CSV files for use in other programming languages. Future work may create a web application where educators can upload their own datasets, then download a 'messy' version in a variety of formats. The web application may also provide downloads of ‘messy’ versions of common datasets such as `iris` or `titanic`.
+These examples highlight how the 'messy' package may be used to modify datasets that instructors already use, to smoothly integrate different types of data wrangling challenges into their teaching. The exercises that can be developed from the modified, messy datasets give students experience of working with a wide range of data issues they are likely to later encounter in their analytical careers. It also gives educators the opportunity to emphasise the use of visualisation not only as a tool for data exploration, but also as a crucial step in validating and identifying inconsistencies in data.
 
-For instructors using publicly available datasets for assessment purposes, the random nature of the output by 'messy' can ensures that no two datasets are identical. This may be particularly useful in the assessment setting where students receive data with the same structure but unique values—reducing the likelihood of copying and plagiarism, as described by @Shutes2009.
+For instructors using publicly available datasets for assessment purposes, the random nature of the output from 'messy' can ensure that no two datasets are identical. This may be particularly useful in the assessment setting where students receive data with the same structure but unique values to reducing the likelihood of plagiarism, as described by @Shutes2009.
 
-The 'messy' package is also valuable outside of teaching, for developers who need datasets for testing functions or R packages, as it introduces controlled inconsistencies that help evaluate robustness.
+Although 'messy' is an R package, its usefulness extends beyond teaching R itself, as datasets can be saved as CSV files for use in other programming languages and software. Future work should develop a web application where educators can upload their own datasets, then download a 'messy' version in a variety of formats. The web application could also provide downloads of ‘messy’ versions of common datasets such as `palemerpenguins` or `titanic`. The 'messy' package is also valuable outside of teaching, for R developers who need datasets for testing functions and packages, as it introduces controlled inconsistencies that help evaluate robustness.
 
 ## Supplementary {.unnumbered}
 
