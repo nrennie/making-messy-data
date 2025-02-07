@@ -86,15 +86,15 @@ As with any package or function that utilises random variables, these functions 
 
 The following functions are available in the 'messy' package:
 
-* `make_missing()`: This function randomly adds missing values into the dataset. The default is to randomly replace values with `NA`, the standard representation of missing values in R.
-* `add_whitespace()`: This function randomly adds white spaces at the end of character strings, or converts numeric columns to characters and then adds spaces. This type of error is often difficult to recognise by eye, and so this provides students with the opportunity to develop data wrangling processes for identifying unique values.
-* `change_case()`: This function randomly changes the case of character strings between lowercase, uppercase, and title case. This results in small variations of the way that category values are recorded.
-* `add_special_chars()`: This function randomly adds special characters, such as `#`, `$` or `, `, to character strings.
-* `duplicate_rows()`:
-* `messy_colnames()`:
-* `messy_date_formats()` / `messy_datetime_formats()`:
-* `messy_datetime_tzones()`:
-* `split_dates()` / `split_datetimes()`:
+* `make_missing()`: Randomly adds missing values into the dataset. The default is to randomly replace values with `NA`, the standard representation of missing values in R.
+* `add_whitespace()`: Randomly adds white spaces at the end of character strings, or converts numeric columns to characters and then adds spaces. This type of error is often difficult to recognise by eye, and so this provides students with the opportunity to develop data wrangling processes for identifying unique values.
+* `change_case()`: Randomly changes the case of character strings between lowercase, uppercase, and title case. This results in small variations of the way that category values are recorded.
+* `add_special_chars()`: Randomly adds special characters, such as `#`, `$` or `, `, to character strings.
+* `duplicate_rows()`: Duplicates rows and inserts them into the data, either in order or at random.
+* `messy_date_formats()` / `messy_datetime_formats()`: Takes any date or date-time column and transforms it into a character column, sampling from any number of random of valid character representations.
+* `messy_datetime_tzones()`: Takes any number of date-time columns and changes their time zones either totally at random, or from a user-provided list of time zones.
+* `split_dates()` / `split_datetimes()`: These functions can split the "date" and "time" components of POSIXt columns and the "hour", "month", and "day" components of Date columns into multiple columns.
+* `messy_colnames()`: Adds special characters and randomly capitalises characters in the column names. Note that it is recommended to apply this function last, to allow selection of columns by their original names.
 
 The following also wraps several of the above modifications into a single, easy-to-use function:
 
@@ -104,7 +104,7 @@ The following also wraps several of the above modifications into a single, easy-
 
 The `messy()` function makes it easy to modify a dataset in one line with limited effort. However, there are several user options that can be changed to create more complex modifications:
 
-* **Columns to adjust**: By default, missing values are added to all columns, and white spaces and case changes are made to all character or factor columns. However, users may specify a specific set of columns to modify. This also allows users to vary which functions and parameter values are applied to each column. 
+* **Columns to adjust**: By default, and depending on the function, modification is either applied to all columns, all character or factor columns, or all date and date-time columns. However, users may specify a specific set of columns to modify. This also allows users to vary which functions and parameter values are applied to each column. 
 * **Degree of messiness**: The default is to modify each value in a column with a probability of 10%. The can be varied to create more or less common errors.
 * **Missing value representation**: The default representation of missing values is `NA`,  but users may specify a different value, or combination of values. For example, in numeric columns they may choose to use `0` or `999` alongside `NA`, and for character strings they may choose empty strings or a single space.
 * **Case change type**: By default, case changes are applied on the word level i.e. the case of an entire word is changed. User may alternatively choose to apply case changes on the letter level, resulting in increased variability in character string representation.
