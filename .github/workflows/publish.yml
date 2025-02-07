@@ -32,6 +32,5 @@ jobs:
         with:
           target: gh-pages
           path: index.qmd
-          to: html
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
