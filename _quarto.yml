@@ -1,0 +1,6 @@
+format:
+  jasa-pdf:
+    keep-tex: true
+  jasa-html:
+    number-sections: true
+    format-links: false
