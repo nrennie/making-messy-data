@@ -19,6 +19,7 @@ format:
     keep-tex: true
   jasa-html:
     number-sections: true
+    format-links: false
 execute: 
   echo: false
   eval: true
