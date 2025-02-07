@@ -5,5 +5,5 @@ This repository contains the source code for *Making 'messy' Data: An R Package 
 Requirements:
 
 * This manuscript is built with [Quarto](https://quarto.org/).
-* It uses `R version 4.4.2 (2024-10-31 ucrt)`.
+* It uses `R version 4.4.1 (2024-10-31 ucrt)`.
 * R package versions are controlled using [renv](https://rstudio.github.io/renv/articles/renv.html).
