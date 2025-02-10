@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Nicola Rennie">
-<meta name="dcterms.date" content="2025-02-07">
-<meta name="keywords" content="real-world data, randomness, data issues, statistics">
+<meta name="dcterms.date" content="2025-02-10">
+<meta name="keywords" content="Real world data, Randomness, Data issues, Statistics">
 
 <title>Making ‘messy’ Data: An R Package for Teaching Data Wrangling with Realistic Data</title>
 <style>
@@ -121,7 +121,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 7, 2025</p>
+      <p class="date">February 10, 2025</p>
     </div>
   </div>
   
@@ -139,7 +139,7 @@ div.csl-indent {
 <div>
   <div class="keywords">
     <div class="block-title">Keywords</div>
-    <p>real-world data, randomness, data issues, statistics</p>
+    <p>Real world data, Randomness, Data issues, Statistics</p>
   </div>
 </div>
 
@@ -210,81 +210,51 @@ div.csl-indent {
 <p>To illustrate the way that the ‘messy’ package can be used to modify teaching for teaching purposes, it is applied to (i) a small, toy dataset, and (ii) the ‘palmerpenguins’ dataset commonly used in teaching.</p>
 <section id="application-to-a-toy-dataset" class="level3" data-number="4.1">
 <h3 data-number="4.1" class="anchored" data-anchor-id="application-to-a-toy-dataset"><span class="header-section-number">4.1</span> Application to a toy dataset</h3>
-<p>To illustrate the use of the <code>messy()</code> function and how its functions affect the data set, we use a small toy, example dataset as input. As seen in <a href="#tbl-show-example" class="quarto-xref">Table&nbsp;1</a>, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns.</p>
-<div id="tbl-show-example" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Initial clean data set with three columns, including character strings, numeric, and binary variables.
+<p>To illustrate the use of the <code>messy()</code> function and how its functions affect the data set, we use a small toy, example dataset as input. As seen in <a href="#fig-show-example" class="quarto-xref">Figure&nbsp;1</a>, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-show-example" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-show-example-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Initial clean data set with three columns, including character strings, numeric, and binary variables.
 </figcaption>
-<div aria-describedby="tbl-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-   month        x     y
-   &lt;chr&gt;    &lt;dbl&gt; &lt;int&gt;
- 1 January   2.21     1
- 2 January   2.29     1
- 3 January   1.46     0
- 4 February  0.55     1
- 5 February  0.06     0
- 6 February  0.03     1
- 7 March     0.11     1
- 8 March     0.13     1
- 9 April     0.63     1
-10 April     1.39     0</code></pre>
-</div>
-</div>
 </figure>
 </div>
-<p>Running the <code>messy()</code> function on this toy data results in the modifications seen in <a href="#tbl-show-example-data" class="quarto-xref">Table&nbsp;2</a>. The <code>month</code> column has had spaces and special characters added as well as case changes, and the <code>x</code> and <code>y</code> columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.</p>
-<div id="tbl-show-example-data" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2: The result of running <code>messy()</code> function on the clean data set, which adds spaces, special characters, and missing values to the columns.
+</div>
+</div>
+<p>Running the <code>messy()</code> function on this toy data results in the modifications seen in <a href="#fig-show-example-data" class="quarto-xref">Figure&nbsp;2</a>. The <code>month</code> column has had spaces and special characters added as well as case changes, and the <code>x</code> and <code>y</code> columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-show-example-data" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-show-example-data-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The result of running <code>messy()</code> function on the clean data set, which adds spaces, special characters, and missing values to the columns.
 </figcaption>
-<div aria-describedby="tbl-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-   month       x       y    
-   &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;
- 1 "January"   "2.21 " "1 " 
- 2 "Jan@ua^ry" "2.29 " "1"  
- 3 "January "  "1.46"  "0"  
- 4 "FEBRUARY"  "0.55"  "1"  
- 5 ".February" "0.06"  "0"  
- 6 "Februa(ry"  &lt;NA&gt;   "1"  
- 7 "March"     "0.11"  &lt;NA&gt; 
- 8 "Ma!rch"    "0.13 " "1"  
- 9 "April"     "0.63"  "1"  
-10 "April"      &lt;NA&gt;   "0"  </code></pre>
-</div>
-</div>
 </figure>
 </div>
-<p>As described in <a href="#sec-methods" class="quarto-xref">Section&nbsp;3</a>, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in <a href="#tbl-piping" class="quarto-xref">Table&nbsp;3</a>, a user has applied the <code>make_missing()</code> function to the <code>month</code> column with a missing value of an empty space, and to the <code>x</code> and <code>y</code> columns with missing values of <code>NA</code> and <code>999</code>. The <code>add_whitespace()</code> function has then also been applied to the <code>month</code> column, with a probability of 50% to create an increase in the number of modifications.</p>
+</div>
+</div>
+<p>As described in <a href="#sec-methods" class="quarto-xref">Section&nbsp;3</a>, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in <a href="#fig-piping" class="quarto-xref">Figure&nbsp;3</a>, a user has applied the <code>make_missing()</code> function to the <code>month</code> column with a missing value of an empty space, and to the <code>x</code> and <code>y</code> columns with missing values of <code>NA</code> and <code>999</code>. The <code>add_whitespace()</code> function has then also been applied to the <code>month</code> column, with a probability of 50% to create an increase in the number of modifications.</p>
 <p>In this example, this results in more subtle modifications. The numeric column remains numeric, and the integer column becomes numeric, making it more difficult to identify that something is not quite correct with the data. The changes to the ‘month’ column are also more difficult to identify by eye, using only additional spaces at the end of words. If viewing the data in a spreadsheet format, these inconsistencies are harder to spot by eye, and can create a nice motivational exercises for using programming languages for data processing, alongside data wrangling tasks.</p>
-<div id="tbl-piping" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;3: The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings.
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-piping" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-piping-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings.
 </figcaption>
-<div aria-describedby="tbl-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-   month          x     y
-   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;
- 1 "January"   2.21     1
- 2 "January "  2.29     1
- 3 "January " NA        0
- 4 "February"  0.55     1
- 5 "February"  0.06     0
- 6 "February"  0.03     1
- 7 "March "    0.11     1
- 8 "March"     0.13     1
- 9 "April "    0.63     1
-10 "April"     1.39   999</code></pre>
-</div>
-</div>
 </figure>
+</div>
+</div>
 </div>
 </section>
 <section id="application-to-palmerpenguins" class="level3" data-number="4.2">
@@ -292,7 +262,7 @@ Table&nbsp;3: The result of running a custom combination of function on the clea
 <p>To illustrate the use of the ‘messy’ package on a more realistically sized dataset, the ‘palmerpenguins’ dataset <span class="citation" data-cites="palmerpenguins">(<a href="#ref-palmerpenguins" role="doc-biblioref">Horst et al. 2020</a>)</span> is used as an example. The ‘palmerpenguins’ dataset provides measurements of penguins from three species (Adélie, Chinstrap, and Gentoo) collected from three islands in the Palmer Archipelago, Antarctica. It includes variables such as species, island, bill length and depth, flipper length, body mass, and sex. The dataset is commonly used in data science education, supporting lessons in data visualisation, statistical modelling, and machine learning.</p>
 <p>In this example, the <code>make_missing()</code> function is applied to the <code>island</code> and <code>body_mass_g</code> columns, with a blank space and <code>999</code> used to represent missing data, respectively. The <code>add_whitespace()</code> and <code>change_case()</code> functions are then applied to the <code>species</code> column, with the case change applied with a probability of 1%.</p>
 <p>To demonstrate how the application of the ‘messy’ package can be used to create exercises and challenges for students, the data can be visualised using common data exploration charts.</p>
-<p>The ‘visdat’ package <span class="citation" data-cites="visdat">(<a href="#ref-visdat" role="doc-biblioref">Tierney 2017</a>)</span> is commonly used to visualise the structure of datasets, and can be used to visualise missing data. By default, the package assumes that missing values are represented by <code>NA</code>. <a href="#fig-vis-missing" class="quarto-xref">Figure&nbsp;1</a> shows the output of visualising missing data for the original ‘palmerpenguins’ dataset and the ‘messy’ version (with the default <code>NA</code> missing values assumed, and the correct encoding used). The first two visualisations appear identical due to the non-standard representation of missing values in the modified columns. This highlights a common situation where students may start out with good intentions to explore patterns in missing values, but fail to identify how missing values have been encoded in the data and therefore miss values.</p>
+<p>The ‘visdat’ package <span class="citation" data-cites="visdat">(<a href="#ref-visdat" role="doc-biblioref">Tierney 2017</a>)</span> is commonly used to visualise the structure of datasets, and can be used to visualise missing data. By default, the package assumes that missing values are represented by <code>NA</code>. <a href="#fig-vis-missing" class="quarto-xref">Figure&nbsp;4</a> shows the output of visualising missing data for the original ‘palmerpenguins’ dataset and the ‘messy’ version (with the default <code>NA</code> missing values assumed, and the correct encoding used). The first two visualisations appear identical due to the non-standard representation of missing values in the modified columns. This highlights a common situation where students may start out with good intentions to explore patterns in missing values, but fail to identify how missing values have been encoded in the data and therefore miss values.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-vis-missing" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -301,13 +271,13 @@ Table&nbsp;3: The result of running a custom combination of function on the clea
 <img src="index_files/figure-html/fig-vis-missing-1.png" class="img-fluid figure-img" width="624">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vis-missing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Visualisation of missing values in the original <code>palmerpenguins</code> data (a), a ‘messy’ version of the <code>palmerpenguins</code> data with default settings (b), and with correct settings (c).
+Figure&nbsp;4: Visualisation of missing values in the original <code>palmerpenguins</code> data (a), a ‘messy’ version of the <code>palmerpenguins</code> data with default settings (b), and with correct settings (c).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The ‘visdat’ package can also be used to quickly visualise the column types in a dataset, and <a href="#fig-visdat" class="quarto-xref">Figure&nbsp;2</a> shows the types of columns in the original and modified ‘palmerpenguins’ data. By providing the ‘messy’ version of the dataset, students are exposed to a wider range of column types. It’s fairly common for columns to have the incorrect type, making recognising and addressing this issue an essential skill. For example, long category names are often recoded as numbers, and ordered categories (factors) are often left unordered and arranged alphabetically be default.</p>
+<p>The ‘visdat’ package can also be used to quickly visualise the column types in a dataset, and <a href="#fig-visdat" class="quarto-xref">Figure&nbsp;5</a> shows the types of columns in the original and modified ‘palmerpenguins’ data. By providing the ‘messy’ version of the dataset, students are exposed to a wider range of column types. It’s fairly common for columns to have the incorrect type, making recognising and addressing this issue an essential skill. For example, long category names are often recoded as numbers, and ordered categories (factors) are often left unordered and arranged alphabetically be default.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-visdat" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -316,13 +286,13 @@ Figure&nbsp;1: Visualisation of missing values in the original <code>palmerpengu
 <img src="index_files/figure-html/fig-visdat-1.png" class="img-fluid figure-img" width="624">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-visdat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Visualisation of column types in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
+Figure&nbsp;5: Visualisation of column types in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>When applying statistical methods using categorical columns, may students may assume that category values have been uniquely encoded. However, this is not always the case, and so learning how to aggregate category levels is <a href="#fig-barchart" class="quarto-xref">Figure&nbsp;3</a> shows the number of unique values in the <code>species</code> column of the ‘palmerpenguins’ data, before and after modification using the ‘messy’ package. Six additional formats of the category labels have been included, though these are only a small percentage of the whole column. This provides an opportunity for students to learn essential data cleaning techniques, such as removing leading and trailing whitespaces, standardising letter case, and reconciling inconsistencies in how the same values are encoded.</p>
+<p>When applying statistical methods using categorical columns, may students may assume that category values have been uniquely encoded. However, this is not always the case, and so learning how to aggregate category levels is <a href="#fig-barchart" class="quarto-xref">Figure&nbsp;6</a> shows the number of unique values in the <code>species</code> column of the ‘palmerpenguins’ data, before and after modification using the ‘messy’ package. Six additional formats of the category labels have been included, though these are only a small percentage of the whole column. This provides an opportunity for students to learn essential data cleaning techniques, such as removing leading and trailing whitespaces, standardising letter case, and reconciling inconsistencies in how the same values are encoded.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-barchart" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -331,7 +301,7 @@ Figure&nbsp;2: Visualisation of column types in the original <code>palmerpenguin
 <img src="index_files/figure-html/fig-barchart-1.png" class="img-fluid figure-img" width="624">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-barchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Visualisation of unique values of the <code>species</code> column in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
+Figure&nbsp;6: Visualisation of unique values of the <code>species</code> column in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
 </figcaption>
 </figure>
 </div>
