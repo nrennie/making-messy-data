@@ -58,7 +58,7 @@ output_to_image <- function(input) {
         x = x, y = y, label = label
       ),
       family = "mono",
-      size = 6,
+      size = 4.5,
       hjust = 0
     ) +
     ggplot2::xlim(-0.5, max_chars * 0.12) +
@@ -151,6 +151,8 @@ To illustrate the use of the `messy()` function and how its functions affect the
 ```{r}
 #| label: fig-show-example
 #| fig-cap: "Initial clean data set with three columns, including character strings, numeric, and binary variables."
+#| fig-asp: 0.6
+#| fig-width: 6.5
 example_data <- tibble::tribble(
   ~month, ~x, ~y,
   "January", 2.21, 1L,
@@ -172,6 +174,8 @@ Running the `messy()` function on this toy data results in the modifications see
 ```{r}
 #| label: fig-show-example-data
 #| fig-cap: "The result of running `messy()` function on the clean data set, which adds spaces, special characters, and missing values to the columns."
+#| fig-asp: 0.6
+#| fig-width: 6.5
 #| message: false
 library(messy)
 set.seed(12345)
@@ -187,6 +191,8 @@ In this example, this results in more subtle modifications. The numeric column r
 ```{r}
 #| label: fig-piping
 #| fig-cap: "The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
+#| fig-asp: 0.6
+#| fig-width: 6.5
 set.seed(12345)
 output <- example_data |>
   make_missing(cols = "month", missing = " ") |>
