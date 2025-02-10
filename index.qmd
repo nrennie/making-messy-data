@@ -24,10 +24,10 @@ execute:
   eval: true
   warning: false
 keywords:
-  - real-world data
-  - randomness
-  - data issues
-  - statistics
+  - Real world data
+  - Randomness
+  - Data issues
+  - Statistics
 abstract: |
   Equipping students in statistics and data science with the necessary data wrangling skills to handle real-world data is a crucial aspect of their education. Real data, unlike the clean, structured examples often used in teaching, can include a variety of challenges such as typographical errors, missing values encoded in unconventional ways, unexpected spaces in text, or other inconsistencies that stem from human error or software incompatibility. These issues are common in real datasets and are essential for students to learn how to address in order to develop the practical skills needed for professional data analysis.
 
@@ -42,6 +42,36 @@ knitr::knit_hooks$set(chunk = function(x, options) {
   x <- chunk_hook(x, options)
   paste0("\\linespread{0.8}\n", x, "\n\n\\linespread{1.9}")
 })
+
+output_to_image <- function(input) {
+  text_output <- utils::capture.output(input)
+  text_output <- paste(text_output, collapse = "\n")
+  num_lines <- length(text_output)
+  max_chars <- max(nchar(text_output))
+  g <- ggplot2::ggplot() +
+    ggplot2::geom_text(
+      data = data.frame(
+        x = 0, y = 0, 
+        label = text_output
+      ),
+      mapping = ggplot2::aes(
+        x = x, y = y, label = label
+      ),
+      family = "mono",
+      size = 6,
+      hjust = 0
+    ) +
+    ggplot2::xlim(-0.5, max_chars * 0.12) +
+    ggplot2::scale_y_continuous(limits = c(-num_lines * 0.3, 0.3)) +
+    ggplot2::coord_cartesian(expand = FALSE) +
+    ggplot2::theme_void() +
+    ggplot2::theme(
+      plot.background = ggplot2::element_rect(
+        fill = "white", colour = "white"
+      )
+    )
+  return(g)
+}
 ```
 
 ## Introduction {#sec-intro}
@@ -116,11 +146,11 @@ To illustrate the way that the 'messy' package can be used to modify teaching fo
 
 ### Application to a toy dataset
 
-To illustrate the use of the `messy()` function and how its functions affect the data set, we use a small toy, example dataset as input. As seen in @tbl-show-example, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns. 
+To illustrate the use of the `messy()` function and how its functions affect the data set, we use a small toy, example dataset as input. As seen in @fig-show-example, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns. 
 
 ```{r}
-#| label: tbl-show-example
-#| tbl-cap: "Initial clean data set with three columns, including character strings, numeric, and binary variables."
+#| label: fig-show-example
+#| fig-cap: "Initial clean data set with three columns, including character strings, numeric, and binary variables."
 example_data <- tibble::tribble(
   ~month, ~x, ~y,
   "January", 2.21, 1L,
@@ -134,33 +164,35 @@ example_data <- tibble::tribble(
   "April", 0.63, 1L,
   "April", 1.39, 0L
 )
-example_data
+output_to_image(example_data)
 ```
 
-Running the `messy()` function on this toy data results in the modifications seen in @tbl-show-example-data. The `month` column has had spaces and special characters added as well as case changes, and the `x` and `y` columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.
+Running the `messy()` function on this toy data results in the modifications seen in @fig-show-example-data. The `month` column has had spaces and special characters added as well as case changes, and the `x` and `y` columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.
 
 ```{r}
-#| label: tbl-show-example-data
-#| tbl-cap: "The result of running `messy()` function on the clean data set, which adds spaces, special characters, and missing values to the columns."
+#| label: fig-show-example-data
+#| fig-cap: "The result of running `messy()` function on the clean data set, which adds spaces, special characters, and missing values to the columns."
 #| message: false
 library(messy)
 set.seed(12345)
-example_data |>
+output <- example_data |>
   messy()
+output_to_image(output)
 ```
 
-As described in @sec-methods, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in @tbl-piping, a user has applied the `make_missing()` function to the `month` column with a missing value of an empty space, and to the `x` and `y` columns with missing values of `NA` and `999`. The `add_whitespace()` function has then also been applied to the `month` column, with a probability of 50% to create an increase in the number of modifications.
+As described in @sec-methods, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in @fig-piping, a user has applied the `make_missing()` function to the `month` column with a missing value of an empty space, and to the `x` and `y` columns with missing values of `NA` and `999`. The `add_whitespace()` function has then also been applied to the `month` column, with a probability of 50% to create an increase in the number of modifications.
 
 In this example, this results in more subtle modifications. The numeric column remains numeric, and the integer column becomes numeric, making it more difficult to identify that something is not quite correct with the data. The changes to the 'month' column are also more difficult to identify by eye, using only additional spaces at the end of words. If viewing the data in a spreadsheet format, these inconsistencies are harder to spot by eye, and can create a nice motivational exercises for using programming languages for data processing, alongside data wrangling tasks.
 
 ```{r}
-#| label: tbl-piping
-#| tbl-cap: "The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
+#| label: fig-piping
+#| fig-cap: "The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
 set.seed(12345)
-example_data |>
+output <- example_data |>
   make_missing(cols = "month", missing = " ") |>
   make_missing(cols = c("x", "y"), missing = c(NA, 999)) |>
   add_whitespace(cols = "month", messiness = 0.5)
+output_to_image(output)
 ```
 
 ### Application to {palmerpenguins}
