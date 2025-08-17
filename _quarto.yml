@@ -1,7 +1,6 @@
 format:
   jasa-pdf:
     keep-tex: true
-    fig-width: 5
   jasa-html:
     number-sections: true
     format-links: false
