@@ -89,7 +89,7 @@ output_to_image <- function(input) {
 
 Data wrangling is a fundamental skill in data analysis, yet it is often not explicitly taught as a standalone course. Instead, students are frequently expected to acquire these skills informally or are assumed to already possess them. This presents a challenge, as students may struggle with data preparation tasks that are essential for meaningful analysis. As @Hardin2015 emphasize, 'if an analyst cannot wrangle data in a form to answer a statistical question, their utility may be limited'. Ensuring that students develop these skills is therefore crucial for their ability to engage effectively with real-world data. The use of concrete examples can also help students to better understand abstract concepts, which is a common difficulty [@Silva2025].
 
-There is often a temptation when teaching statistical methods for instructors to use *nice* datasets. However, these datasets are not very realistic, and do not represent the data that students will later encounter in the real world. The gap between examples used in teaching and introductory textbooks and the real world is notably large [@Hsu2022]. Real datasets often contain issues such as typographical errors, missing values encoded in strange ways, or unexpected values. These data issues often derive from human error, poor data collection processes, or errors in pre-processing with software. Therefore, these issues are likely to arise in any analytical project, and so it is essential that students practice skills to identify and resolve them. The importance of practicing data wrangling skills is further emphasised by the fact that it can be harder for students to identify the mistakes they have made in data wrangling processes, compared to other tasks such as visualisation [@Rundel2021].
+There is often a temptation when teaching statistical methods for instructors to use *nice* datasets i.e. datasets that are pre-cleaned and ready for students to use for the primary purpose of the session, such as fitting models. However, these datasets are not very realistic, and do not represent the data that students will later encounter in the real world. The gap between examples used in teaching and introductory textbooks and the real world is notably large [@Hsu2022]. Real datasets often contain issues such as typographical errors, missing values encoded in strange ways, or unexpected values. These data issues often derive from human error, poor data collection processes, or errors in pre-processing with software. Therefore, these issues are likely to arise in any analytical project, and so it is essential that students practice skills to identify and resolve them. The importance of practicing data wrangling skills is further emphasised by the fact that it can be harder for students to identify the mistakes they have made in data wrangling processes, compared to other tasks such as visualisation [@Rundel2021].
 
 Though some programmes may include data wrangling as a standalone course, there are many opportunities to integrate wrangling practice into other courses where students work with data. However, this can present challenges for instructors, who may not view data wrangling as part of their teaching responsibilities or may already struggle to cover core subject material within the constraints of a semester. Many available teaching datasets are already clean, and instructors often lack the time to source or modify datasets to better reflect real-world complexities. As a result, despite the importance of data wrangling skills, finding practical ways to incorporate them into existing coursework remains a significant challenge.
 
@@ -157,11 +157,11 @@ To illustrate the way that the 'messy' package can be used to modify data for te
 
 ### Application to a toy dataset
 
-To illustrate the use of the `messy()` function and how its functions affect the data set, we use a small toy, example dataset as input. As seen in @fig-show-example, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns. 
+To illustrate the use of the `messy()` function and how its functions affect the dataset, we use a small toy, example dataset as input. As seen in @fig-show-example, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns. 
 
 ```{r}
 #| label: fig-show-example
-#| fig-cap: "Initial clean data set with three columns, including character strings, numeric, and binary variables."
+#| fig-cap: "Initial clean dataset with three columns, including character strings, numeric, and binary variables."
 #| fig-asp: 0.6
 #| fig-width: 6.5
 example_data <- tibble::tribble(
@@ -184,7 +184,7 @@ Running the `messy()` function on this toy data results in the modifications see
 
 ```{r}
 #| label: fig-show-example-data
-#| fig-cap: "The result of running `messy()` function on the clean data set, which adds spaces, special characters, and missing values to the columns."
+#| fig-cap: "The result of running `messy()` function on the clean dataset, which adds spaces, special characters, and missing values to the columns."
 #| fig-asp: 0.6
 #| fig-width: 6.5
 #| message: false
@@ -201,7 +201,7 @@ In this example, this results in more subtle modifications. The numeric column r
 
 ```{r}
 #| label: fig-piping
-#| fig-cap: "The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
+#| fig-cap: "The result of running a custom combination of function on the clean dataset, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
 #| fig-asp: 0.6
 #| fig-width: 6.5
 set.seed(12345)
@@ -346,7 +346,7 @@ The `messy` package does currently have a few limitations, mainly in relation to
 
 The random and automated nature of the output also means that 'messy' is limited in how authentic the errors can be, especially for domain-specific problems. The output may not reflect *real* mistakes in specific fields, in the way that carefully-crafted simulation data might. However, this is simply the trade-off between the quick, user-friendly but general approach provided by 'messy', and a more time-consuming, but special approach performed entirely by a user. Since 'messy' outputs simple R objects, users could further customise the data issues with their own domain-specific alterations. 
 
-The current implementation of 'messy' assumes that variables are independent from each other, at least in how likely they are to be missing or exhibit data issues. In the real world, this is not always true. For example, a more realistic scenario might be that if variable `X` is missing, then variable `Y` must also be implicitly missing; or when variable `X` is equal to `Category A`, then variable `Y` is more likely to be reported in an unusual format. Future work could introduce conditional versions of the existing functions where users specify pairs (or sets) of columns in their data which should follow similar patterns of randomness, rather than editing columns independently to each other. Users would be able to specify the extent of the dependence between columns. Despite these limitations, 'messy' provides a user-friendly framework for generating more realistic data sets for teaching, and community feature suggestions will play a large part in determining how the package can evolve to incorporate a wider range of more realistic data scenarios.
+The current implementation of 'messy' assumes that variables are independent from each other, at least in how likely they are to be missing or exhibit data issues. In the real world, this is not always true. For example, a more realistic scenario might be that if variable `X` is missing, then variable `Y` must also be implicitly missing; or when variable `X` is equal to `Category A`, then variable `Y` is more likely to be reported in an unusual format. Future work could introduce conditional versions of the existing functions where users specify pairs (or sets) of columns in their data which should follow similar patterns of randomness, rather than editing columns independently to each other. Users would be able to specify the extent of the dependence between columns. Despite these limitations, 'messy' provides a user-friendly framework for generating more realistic datasets for teaching, and community feature suggestions will play a large part in determining how the package can evolve to incorporate a wider range of more realistic data scenarios.
 
 
 ## Supplementary {.unnumbered}
