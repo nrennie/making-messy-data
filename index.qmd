@@ -17,6 +17,17 @@ author:
         postal-code: "LA1 4YW"
     attributes:
       corresponding: true
+  - name: Jack Davison
+    orcid: 0000-0003-2653-6615
+    email: "Jack.Davison@ricardo.com"
+    affiliations:
+      - name: Ricardo
+        address: The Gemini Building, Fermi Ave
+        city: Harwell, Didcot
+        region: Oxfordshire
+        country: UK
+        postal-code: "OX11 0QR"
+        url: "https://www.ricardo.com/en"
 bibliography: references.bib
 date: last-modified
 execute: 
