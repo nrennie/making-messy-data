@@ -54,6 +54,36 @@ knitr::knit_hooks$set(chunk = function(x, options) {
   x <- chunk_hook(x, options)
   paste0("\\linespread{0.8}\n", x, "\n\n\\linespread{1.9}")
 })
+
+output_to_image <- function(input) {
+  text_output <- utils::capture.output(input)
+  text_output <- paste(text_output, collapse = "\n")
+  num_lines <- length(text_output)
+  max_chars <- max(nchar(text_output))
+  g <- ggplot2::ggplot() +
+    ggplot2::geom_text(
+      data = data.frame(
+        x = 0, y = 0, 
+        label = text_output
+      ),
+      mapping = ggplot2::aes(
+        x = x, y = y, label = label
+      ),
+      family = "mono",
+      size = 4.5,
+      hjust = 0
+    ) +
+    ggplot2::xlim(-0.5, max_chars * 0.12) +
+    ggplot2::scale_y_continuous(limits = c(-num_lines * 0.3, 0.3)) +
+    ggplot2::coord_cartesian(expand = FALSE) +
+    ggplot2::theme_void() +
+    ggplot2::theme(
+      plot.background = ggplot2::element_rect(
+        fill = "white", colour = "white"
+      )
+    )
+  return(g)
+}
 ```
 
 ## Introduction {#sec-intro}
@@ -84,9 +114,7 @@ To best equip students with relevant data wrangling skills, it is important to i
 
 Missing values are a common issue in data analysis. Though classes on handling and imputing missing values are not an uncommon feature of statistical modelling courses, the practice of initially identifying missing values in data is less common. In R [@RCore], missing values are explicitly represented as `NA`. In other software they may be encoded in a variety formats such as empty strings, a single space, placeholder values like 999, or other arbitrary indicators. Additionally, even within the same dataset, different columns may use different conventions for missing data. In some cases, multiple encodings may appear within a single column, each carrying distinct meanings. It is essential that students gain experience in recognising these inconsistencies, as failure to do so may result in overlooking missing values - which even the best choice of imputation method cannot overcome.
 
-Text data, whether resulting from free-text responses or pre-defined categories, can often contain inconsistencies. This is particularly common in data originating from surveys, where open-ended questions may have been asked, or where questions and available answers have updated in different iterations of the survey. For data resulting from web scraping, there may be strange encodings where accented or non-Latin characters exist in the content, or where formatting cannot be easily retained. For example, NO~2~ may be recorded as `"NO2"` i.e. without the subscript formatting. 
-
-Other common sources of inconsistency in text data include variations in spacing, differences in letter case, and typographical errors. Visualisation techniques can be particularly useful for identifying these issues, as they help reveal patterns that may not be immediately apparent through visual inspection, especially when the proportion of such errors is small. However, many courses focus on teaching the use of data visualisation as a method of communicating results, and don't allow enough time for data visualisation as a means of effective data validation [@Hsu2022; @Hudiburgh2020].
+Text data, whether resulting from free-text responses or pre-defined categories, can often contain inconsistencies. This is particularly common in data originating from surveys, where open-ended questions may have been asked, or where questions and available answers have updated in different iterations of the survey. For data resulting from web scraping, there may be strange encodings where accented or non-Latin characters exist in the content, or where formatting cannot be easily retained. For example, NO~2~ may be recorded as `"NO2"` i.e. without the subscript formatting. Other common sources of inconsistency in text data include variations in spacing, differences in letter case, and typographical errors. Visualisation techniques can be particularly useful for identifying these issues, as they help reveal patterns that may not be immediately apparent through visual inspection, especially when the proportion of such errors is small. However, many courses focus on teaching the use of data visualisation as a method of communicating results, and don't allow enough time for data visualisation as a means of effective data validation [@Hsu2022; @Hudiburgh2020].
 
 ## Methodology {#sec-methods}
 
@@ -137,8 +165,7 @@ To illustrate the use of the `messy()` function and how its functions affect the
 ```{r}
 #| label: fig-show-example
 #| fig-cap: "Initial clean dataset with three columns, including character strings, numeric, and binary variables."
-#| fig-asp: 0.6
-#| fig-width: 6.5
+#| fig-asp: 0.7
 example_data <- tibble::tribble(
   ~month, ~x, ~y,
   "January", 2.21, 1L,
@@ -152,42 +179,37 @@ example_data <- tibble::tribble(
   "April", 0.63, 1L,
   "April", 1.39, 0L
 )
-example_data
+output_to_image(example_data)
 ```
 
-Running the `messy()` function on this toy data results in the modifications seen in @tbl-show-example-data. The `month` column has had spaces and special characters added as well as case changes, and the `x` and `y` columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.
+Running the `messy()` function on this toy data results in the modifications seen in @fig-show-example-data. The `month` column has had spaces and special characters added as well as case changes, and the `x` and `y` columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.
 
 ```{r}
 #| label: fig-show-example-data
 #| fig-cap: "The result of running `messy()` function on the clean dataset, which adds spaces, special characters, and missing values to the columns."
-#| fig-asp: 0.6
-#| fig-width: 6.5
+#| fig-asp: 0.7
 #| message: false
 library(messy)
 set.seed(12345)
-example_data |>
+output <- example_data |>
   messy()
+output_to_image(output)
 ```
 
-As described in @sec-methods, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in @tbl-piping, a user has applied the `make_missing()` function to the `month` column with a missing value of an empty space, and to the `x` and `y` columns with missing values of `NA` and `999`. The `add_whitespace()` function has then also been applied to the `month` column, with a probability of 50% to create an increase in the number of modifications.
+As described in @sec-methods, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in @fig-piping, a user has applied the `make_missing()` function to the `month` column with a missing value of an empty space, and to the `x` and `y` columns with missing values of `NA` and `999`. The `add_whitespace()` function has then also been applied to the `month` column, with a probability of 50% to create an increase in the number of modifications.
 
 In this example, this results in more subtle modifications. The numeric column remains numeric, and the integer column becomes numeric, making it more difficult to identify that something is not quite correct with the data. The changes to the 'month' column are also more difficult to identify by eye, using only additional spaces at the end of words. If viewing the data in a spreadsheet format, these inconsistencies are harder to spot by eye, and can create a nice motivational exercises for using programming languages for data processing, alongside data wrangling tasks.
 
 ```{r}
-<<<<<<< HEAD
 #| label: fig-piping
 #| fig-cap: "The result of running a custom combination of function on the clean dataset, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
-#| fig-asp: 0.6
-#| fig-width: 6.5
-=======
-#| label: tbl-piping
-#| tbl-cap: "The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
->>>>>>> main
+#| fig-asp: 0.7
 set.seed(12345)
-example_data |>
+output <- example_data |>
   make_missing(cols = "month", missing = " ") |>
   make_missing(cols = c("x", "y"), missing = c(NA, 999)) |>
   add_whitespace(cols = "month", messiness = 0.5)
+output_to_image(output)
 ```
 
 Outside of the core `messy()` functions, further functions for data manipulation exist, including `duplicate_rows()`. For example, by setting `messiness = 0.2`, on average 20% of rows in the original data will be duplicated. Due to the random nature of 'messy', and to allow for rounding, the output may not always contain *exactly* 20% additional rows. By default, the duplicated rows are inserted directly underneath the original row. However, setting the `shuffle` argument to `TRUE` results in them being randomly inserted which will be more difficult for students to identify any duplication by eye. 
@@ -195,8 +217,7 @@ Outside of the core `messy()` functions, further functions for data manipulation
 ```{r}
 #| label: fig-duplicate
 #| fig-cap: "The result of running `duplicate_rows()` function on the clean dataset."
-#| fig-asp: 0.6
-#| fig-width: 6.5
+#| fig-asp: 0.8
 set.seed(12345)
 output <- example_data |>
   duplicate_rows(messiness = 0.2, shuffle = TRUE)
@@ -208,8 +229,7 @@ To demonstrate the applications of messy date functions, we first create a *date
 ```{r}
 #| label: fig-date
 #| fig-cap: "The result of running `duplicate_rows()` function on the clean dataset."
-#| fig-asp: 0.6
-#| fig-width: 6.5
+#| fig-asp: 0.7
 example_data_date <- example_data |> 
   dplyr::mutate(
     date = paste0("2025", month, "01"),
@@ -245,8 +265,7 @@ The 'visdat' package [@visdat] is commonly used to visualise the structure of da
 
 ```{r}
 #| label: fig-vis-missing
-#| fig-asp: 0.6
-#| fig-width: 6.5
+#| fig-asp: 0.7
 #| fig-cap: "Visualisation of missing values in the original `palmerpenguins` data (a), a 'messy' version of the `palmerpenguins` data with default settings (b), and with correct settings (c)."
 library(visdat)
 library(ggplot2)
@@ -255,13 +274,13 @@ library(patchwork)
 g1 <- vis_miss(penguins) +
   labs(caption = "(a) Original data") +
   theme(
-    text = element_text(size = 13),
+    text = element_text(size = 12),
     plot.caption = element_text(hjust = 0.5)
   )
 g2 <- vis_miss(messy_penguins) +
   labs(caption = "(b) 'messy' data,\nmissing NA") +
   theme(
-    text = element_text(size = 13),
+    text = element_text(size = 12),
     plot.caption = element_text(hjust = 0.5)
   )
 g3 <- messy_penguins |> 
@@ -272,7 +291,7 @@ g3 <- messy_penguins |>
   vis_miss() +
   labs(caption = "(c) 'messy' data,\nmissing 999 and ' '") +
   theme(
-    text = element_text(size = 13),
+    text = element_text(size = 12),
     plot.caption = element_text(hjust = 0.5)
   )
 g1 + g2 + g3 + plot_layout(axes = "collect") &
@@ -286,8 +305,7 @@ The 'visdat' package can also be used to quickly visualise the column types in a
 
 ```{r}
 #| label: fig-visdat
-#| fig-asp: 0.6
-#| fig-width: 6.5
+#| fig-asp: 0.7
 #| fig-cap: "Visualisation of column types in the original `palmerpenguins` data (a) and a 'messy' version of the `palmerpenguins` data (b)."
 g1 <- vis_dat(penguins, sort_type = FALSE) +
   scale_fill_brewer(
@@ -322,7 +340,6 @@ When applying statistical methods using categorical columns, may students may as
 ```{r}
 #| label: fig-barchart
 #| fig-asp: 0.5
-#| fig-width: 6.5
 #| fig-cap: "Visualisation of unique values of the `species` column in the original `palmerpenguins` data (a) and a 'messy' version of the `palmerpenguins` data (b)."
 g1 <- ggplot(
   data = penguins,

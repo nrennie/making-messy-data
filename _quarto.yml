@@ -1,7 +1,11 @@
 format:
   jasa-pdf:
     keep-tex: true
+    fig-width: 5
+    fig-align: center
   jasa-html:
     number-sections: true
     format-links: false
     toc: true
+    fig-width: 6.5
+    fig-align: center
