@@ -127,7 +127,7 @@ As with any package or function that utilises random variables, these functions 
 
 ### Functions available
 
-The following functions are available in the 'messy' package:
+The following functions are available in version 0.1.0 of the 'messy' package:
 
 * `make_missing()`: Randomly adds missing values into the dataset. The default is to randomly replace values with `NA`, the standard representation of missing values in R.
 * `add_whitespace()`: Randomly adds white spaces at the end of character strings, or converts numeric columns to characters and then adds spaces. This type of error is often difficult to recognise by eye, and so this provides students with the opportunity to develop data wrangling processes for identifying unique values.
@@ -142,6 +142,8 @@ The following functions are available in the 'messy' package:
 The following also wraps several of the above modifications into a single, easy-to-use function:
 
 * `messy()`: This function applies the `make_missing()`, `add_whitespace()`, `change_case()`, and `add_special_chars()` functions to the default columns with default parameters.
+
+The remaining functions are not applied as part of the core `messy()` function to allow instructors to retain the original size and column names from the input data, as these aspects are likely to be key elements of existing teaching examples.
 
 ### User options
 
@@ -213,6 +215,38 @@ output <- example_data |>
   add_whitespace(cols = "month", messiness = 0.5)
 output_to_image(output)
 ```
+
+Outside of the core `messy()` functions, further functions for data manipulation exist, including `duplicate_rows()`. For example, by setting `messiness = 0.2`, on average 20% of rows in the original data will be duplicated. Due to the random nature of 'messy', and to allow for rounding, the output may not always contain *exactly* 20% additional rows. By default, the duplicated rows are inserted directly underneath the original row. However, setting the `shuffle` argument to `TRUE` results in them being randomly inserted which will be more difficult for students to identify any duplication by eye. 
+
+```{r}
+#| label: fig-duplicate
+#| fig-cap: "The result of running `duplicate_rows()` function on the clean dataset."
+#| fig-asp: 0.6
+#| fig-width: 6.5
+set.seed(12345)
+output <- example_data |>
+  duplicate_rows(messiness = 0.2, shuffle = TRUE)
+output_to_image(output)
+```
+
+To demonstrate the applications of messy date functions, we first create a *date* column in the example data, using the existing `month` column and setting all new `date` elements to be equal to the first of that month, in the year 2025.
+
+```{r}
+#| label: fig-date
+#| fig-cap: "The result of running `duplicate_rows()` function on the clean dataset."
+#| fig-asp: 0.6
+#| fig-width: 6.5
+example_data_date <- example_data |> 
+  dplyr::mutate(
+    date = paste0("2025", month, "01"),
+    date = lubridate::ymd(date)
+  )
+output <- example_data_date |> 
+  messy_date_formats()
+output_to_image(output)
+```
+
+The resulting output from applying the `messy_date_formats()` retains the *correct* dates, but with a variety of encodings. This will result in many automated date processing functions returning an error or the incorrect date as output.
 
 ### Application to {palmerpenguins}
 
