@@ -36,14 +36,14 @@ execute:
   eval: true
   warning: false
 keywords:
-  - Real-world data
-  - Randomness
-  - Data issues
-  - Statistics
+  - real-world data
+  - randomness
+  - data issues
+  - statistics
 abstract: |
-  Equipping students in statistics and data science with the necessary data wrangling skills to handle real-world data is a crucial aspect of their education. Real data, unlike the clean, structured examples often used in teaching, can include a variety of challenges such as typographical errors, missing values encoded in unconventional ways, or unexpected spaces in text. These issues, and others stemming from human error or software incompatibilities, are common in real-world datasets and it is essential for students to learn how to address them in order to develop the practical skills needed for professional data analysis.
+  Equipping students in statistics and data science with the necessary data wrangling skills to handle real-world data is a crucial aspect of their education. Real data, unlike the clean, structured examples often used in teaching, can include a variety of challenges such as typographical errors, missing values encoded in unconventional ways, unexpected spaces in text, or other inconsistencies that stem from human error or software incompatibility. These issues are common in real datasets and are essential for students to learn how to address in order to develop the practical skills needed for professional data analysis.
 
-  While real-world data offers these valuable learning opportunities, it can also be too messy and unpredictable to be useful in a time-constrained classroom environment. Teaching with such data may overwhelm students or detract from the core statistical concepts. To address this discepancy, this paper presents an R package designed to introduce controlled levels of messiness into existing, clean teaching datasets. This package allows educators to retain the structure and simplicity of familiar teaching examples while providing students with a realistic, manageable data cleaning experience. By using this approach, instructors can implicitly teach critical data wrangling techniques, preparing students for the complexities they will encounter in real-world data analysis.
+  However, while real data offers these valuable learning opportunities, it can also be too messy and unpredictable to be useful in a time-constrained classroom environment. Teaching with such data may overwhelm students or detract from the core statistical concepts. To address this, this paper presents an R package designed to introduce controlled levels of messiness into existing, clean teaching datasets. This package allows educators to retain the structure and simplicity of familiar teaching examples while providing students with a realistic, manageable data cleaning experience. By using this approach, instructors can implicitly teach critical data wrangling techniques, preparing students for the complexities they will encounter in real-world data analysis.
 ---
 
 ```{r}
@@ -54,36 +54,6 @@ knitr::knit_hooks$set(chunk = function(x, options) {
   x <- chunk_hook(x, options)
   paste0("\\linespread{0.8}\n", x, "\n\n\\linespread{1.9}")
 })
-
-output_to_image <- function(input) {
-  text_output <- utils::capture.output(input)
-  text_output <- paste(text_output, collapse = "\n")
-  num_lines <- length(text_output)
-  max_chars <- max(nchar(text_output))
-  g <- ggplot2::ggplot() +
-    ggplot2::geom_text(
-      data = data.frame(
-        x = 0, y = 0, 
-        label = text_output
-      ),
-      mapping = ggplot2::aes(
-        x = x, y = y, label = label
-      ),
-      family = "mono",
-      size = 4.5,
-      hjust = 0
-    ) +
-    ggplot2::xlim(-0.5, max_chars * 0.12) +
-    ggplot2::scale_y_continuous(limits = c(-num_lines * 0.3, 0.3)) +
-    ggplot2::coord_cartesian(expand = FALSE) +
-    ggplot2::theme_void() +
-    ggplot2::theme(
-      plot.background = ggplot2::element_rect(
-        fill = "white", colour = "white"
-      )
-    )
-  return(g)
-}
 ```
 
 ## Introduction {#sec-intro}
@@ -96,15 +66,15 @@ Though some programmes may include data wrangling as a standalone course, there 
 
 ## Background {#sec-background}
 
-The use of data in teaching statistics and data science has a long history, dating back to the early days of statistical education when small, manually collected datasets were used to illustrate key concepts. Classic datasets, such as the `iris` dataset, have been widely used for decades. As methodology and technology evolve, it is essential that the examples used in teaching effectively prepare students for the modern world of data.
+The use of data in teaching statistics and data science has a long history, dating back to the early days of statistical education when small, manually collected datasets were used to illustrate key concepts. Classic datasets, such as the `iris` dataset have been widely used for decades. As methodology and technology evolve, it is essential that the examples used in teaching effectively prepare students for the modern world of data.
 
 ### Existing datasets for teaching
 
-A range of teaching-specific resources exists for statistics and data science education, including domain-specific datasets and instructional tools. In the health sciences, for example, the Teaching of Statistics in the Health Sciences resources portal [@TSHSResourcesPortal] provides datasets for teaching purposes, derived from real patient data. Many datasets, including `titanic`, `mtcars`, `iris`, and `palmerpenguins`, are also available through R [@RCore] which is commonly used for teaching practical data analysis skills in statistics courses [@Zavez2025]. However, these datasets are often pre-cleaned or overly simplistic, making analyses too easy and limiting students’ exposure to real-world data challenges. Additionally, widely used datasets such as `iris` and `titanic` have extensive publicly available analyses, which, while helpful for learning syntax, may encourage students to rely on existing solutions rather than developing critical thinking and problem-solving skills. This issue is further amplified by the increasing use of AI-generated solutions, which allow students to bypass key aspects of data analysis. Introducing messier, more variable datasets helps ensure that students actively engage with data wrangling processes, rather than simply reproducing pre-existing approaches.
+A range of teaching-specific resources exists for statistics and data science education, including domain-specific datasets and instructional tools. In the health sciences, for example, the Teaching of Statistics in the Health Sciences [@TSHSResourcesPortal] resources portal provides datasets for teaching purposes, derived from real patient data. Many datasets, including `titanic`, `mtcars`, `iris`, and `palmerpenguins`, are also available through R [@RCore] which is commonly used for teaching practical data analysis skills in statistics courses [@Zavez2025]. However, these datasets are often pre-cleaned or overly simplistic, making analyses too easy and limiting students’ exposure to real-world data challenges. Additionally, widely used datasets such as `iris` and `titanic` have extensive publicly available analyses, which, while helpful for learning syntax, may encourage students to rely on existing solutions rather than developing critical thinking and problem-solving skills. This issue is further amplified by the increasing use of AI-generated solutions, which allow students to bypass key aspects of data analysis. Introducing messier, more variable datasets helps ensure that students actively engage with data wrangling processes, rather than simply reproducing pre-existing approaches.
 
-If the aim is to provide students with opportunities to learn how to work with real-world data, the natural suggestion may be to simply use real data when teaching. @Rivera2019 notes that when teaching using real data, 'filtering, aggregating, cleaning, and other pre-processing could be needed; presenting an opportunity to introduce students to data management and data wrangling.' However, using real data in teaching presents several challenges. Real-world data may have undergone some level of aggregation or statistical disclosure control before becoming publicly available, limiting the types of analyses that they can be used to demonstrate. In other cases, real data cannot be shared due to ethical concerns, such as individual-level patient records from medical studies. Even when real data can be shared, it is often too complex or messy for instructional use. If data wrangling is not the primary learning objective, students may spend excessive time on pre-processing rather than focusing on analytical concepts. Instructors may spend time pre-cleaning data to control the level of messiness, to strike a balance between realism and usability, allowing students to develop practical skills without being overwhelmed by unnecessary complexity. However, this creates an additional, potentially time-intensive task for instructors when identifying and preparing data for teaching. This can be further complicated by the fact that publicly-available datasets shared in online repositories do not always have data documentation [@Mihaescu2021].
+If the aim is to provide students with opportunities to learn how to work with real data, the natural suggestion may be to simply use real data when teaching. @Rivera2019 notes that when teaching using real data, "filtering, aggregating, cleaning, and other pre-processing could be needed; presenting an opportunity to introduce students to data management and data wrangling." However, using real data in teaching presents several challenges. In some cases, real datasets cannot be shared due to ethical concerns, such as those in healthcare. They may also have undergone statistical disclosure control before becoming publicly available, limiting the types of analyses that they can be used to demonstrate. Even when real data can be shared, it is often too complex or messy for instructional use. If data wrangling is not the primary learning objective, students may spend excessive time on pre-processing rather than focusing on analytical concepts.  Instructors may spend time pre-cleaning data to control the level of messiness, to strike a balance between realism and usability, allowing students to develop practical skills without being overwhelmed by unnecessary complexity. However, this creates an additional, potentially time-intensive task for instructors when identifying and preparing data for teaching. This can be further complicated by the fact that publicly-available datasets shared in online repositories do not always have data documentation [@Mihaescu2021].
 
-An alternative approach to obtaining data for teaching purposes is for educators to generate their own data through the use of simulation. Simulated datasets allow educators to control specific characteristics of the data, including the types of variables and how much wrangling would be required to make it usable for analysis. As discussed in @McSweeney2024, this approach provides flexibility in dataset design and therefore can be more pedagogically effective. However, the use of simulation to generate data requires that educators have some expertise in simulation and enough time to develop their own data-generating processes, which is often not the case. Lack of time for creating customised datasets, is a particular constraint when educators require datasets with different features for teaching different analytical methods over the course of a programme. Though @Shutes2009 presents R functions for simulating datasets for individual student assessments, these may not be relevant for all methodologies or application areas. Further, if not performed carefully, simulated data may also be too clean and have too little noise to be realistic.
+An alternative approach to obtaining data for teaching purposes is for educators to generate their own data through the use of simulation. Simulated datasets allow educators to control specific characteristics of the data, including the types of variables and how much wrangling by students would be required to make it usable for analysis. As discussed in @McSweeney2024, this approach provides flexibility in dataset design and therefore can be more pedagogically effective. However, the use of simulation to generate data requires that educators have some expertise in simulation and enough time to develop their own data-generating processes, which is often not the case. Lack of time for creating customised datasets, is a particular constraint when educators require datasets with different features for teaching different analytical methods over the course of a programme. Though @Shutes2009 presents R functions for simulating datasets for individual student assessments, these may not be relevant for all methodologies or application areas. Further, if not performed carefully, simulated data may also be too clean and have too little noise to be realistic.
 
 This highlights the need for an approach to obtaining data for teaching purposes that has realistic features and data issues to allow students to practice data wrangling. At the same time, this approach should be quick and easy for instructors to use for data generation, and should ensure that the resulting data is not overly complex for the teaching scenario.
 
@@ -120,7 +90,7 @@ Other common sources of inconsistency in text data include variations in spacing
 
 ## Methodology {#sec-methods}
 
-Given the need for a more effective, realistic approach to generating data for teaching, the use of the 'messy' R package is proposed. The package takes a clean dataset and randomly introduces common data issues such as missing values, typographical errors, and inconsistencies in data representation. This approach provides students with the opportunity to practice essential data cleaning and wrangling skills, without the need for instructors to replace or extensively modify their existing teaching examples. By adding controlled messiness to familiar datasets, the package allows students to engage with realistic data in a structured and manageable way.
+Given the need for a more effective, realistic approach to generating data for teaching, the use of the 'messy' R package is proposed. The package takes a clean dataset and randomly introduces common data issues such as missing values, typographic errors, and inconsistencies in data representation. This approach provides students with the opportunity to practice essential data cleaning and wrangling skills, without the need for instructors to modify or replace their existing teaching examples. By adding controlled messiness to familiar datasets, the package allows students to engage with realistic data in a structured and manageable way.
 
 The 'messy' package follows the *tidy design principles* [@tidyDesign] of being human-centered, consistent, composable, and inclusive. The package offers separate functions that perform specific data de-cleaning tasks, where functions names are indicative of their purpose. For example, the `add_whitespace()` function adds additional white space to character strings. As in the 'tidyverse' [@tidyverse], these separate functions can be easily piped together to create flexible and efficient combinations of tasks. Consistent argument names and implementations are used across these functions. Additionally, the package includes a wrapper function, `messy()`, that simplifies the process of creating messy data, allowing users to apply multiple data modifications with a single command. This design ensures that the package is intuitive and consistent, making it easy for users to integrate into their existing teaching workflows.
 
@@ -150,15 +120,15 @@ The remaining functions are not applied as part of the core `messy()` function t
 
 The `messy()` function makes it easy to modify a dataset in one line with limited effort. However, there are several user options that can be changed to create more complex modifications:
 
-* **Columns to adjust**: By default, and depending on the function, modification is either applied to all columns, all character and factor columns, or all date and date-time columns. However, users may specify a subset of columns to modify. This also allows users to vary which functions and parameter values are applied to each column. 
-* **Degree of messiness**: The default is to modify each value in a column with a probability of 10%. This can be varied to create more or less common errors.
+* **Columns to adjust**: By default, and depending on the function, modification is either applied to all columns, all character or factor columns, or all date and date-time columns. However, users may specify a specific set of columns to modify. This also allows users to vary which functions and parameter values are applied to each column. 
+* **Degree of messiness**: The default is to modify each value in a column with a probability of 10%. The can be varied to create more or less common errors.
 * **Missing value representation**: The default representation of missing values is `NA`,  but users may specify a different value, or combination of values. For example, in numeric columns they may choose to use `0` or `999` alongside `NA`, and for character strings they may choose empty strings or a single space.
-* **Case change type**: By default, case changes are applied on the word level i.e. the case of an entire word is changed. Users may alternatively choose to apply case changes on the letter level, resulting in increased variability in character string representation.
-* **Combination of functions**: Since the functions are designed to be used in a piped workflow, it is easy for users to define and apply a custom combination of functions to a variety of columns in the data.
+* **Case change type**: By default, case changes are applied on the word level i.e. the case of an entire word is changed. User may alternatively choose to apply case changes on the letter level, resulting in increased variability in character string representation.
+* **Combination of functions**: Since the functions are designed to be used in a piped workflow, it's easy for users to define and apply a custom combination of functions to a variety of columns in the data.
 
 ## Results {#sec-res}
 
-To illustrate the way that the 'messy' package can be used to modify data for teaching purposes, it is applied to (i) a small, toy dataset, and (ii) the 'palmerpenguins' dataset commonly used in teaching.
+To illustrate the way that the 'messy' package can be used to modify teaching for teaching purposes, it is applied to (i) a small, toy dataset, and (ii) the 'palmerpenguins' dataset commonly used in teaching.
 
 ### Application to a toy dataset
 
@@ -182,10 +152,10 @@ example_data <- tibble::tribble(
   "April", 0.63, 1L,
   "April", 1.39, 0L
 )
-output_to_image(example_data)
+example_data
 ```
 
-Running the `messy()` function on this toy data results in the modifications seen in @fig-show-example-data. The `month` column has had spaces and special characters added as well as case changes, and the `x` and `y` columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. These modifications can be used to create exercises in removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.
+Running the `messy()` function on this toy data results in the modifications seen in @tbl-show-example-data. The `month` column has had spaces and special characters added as well as case changes, and the `x` and `y` columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.
 
 ```{r}
 #| label: fig-show-example-data
@@ -195,26 +165,29 @@ Running the `messy()` function on this toy data results in the modifications see
 #| message: false
 library(messy)
 set.seed(12345)
-output <- example_data |>
+example_data |>
   messy()
-output_to_image(output)
 ```
 
-As described in @sec-methods, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in @fig-piping, a user has applied the `make_missing()` function to the `month` column with a missing value of an empty space, and to the `x` and `y` columns with missing values of `NA` and `999`. The `add_whitespace()` function has then also been applied to the `month` column, with a probability of 50% to create an increase in the number of modifications.
+As described in @sec-methods, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in @tbl-piping, a user has applied the `make_missing()` function to the `month` column with a missing value of an empty space, and to the `x` and `y` columns with missing values of `NA` and `999`. The `add_whitespace()` function has then also been applied to the `month` column, with a probability of 50% to create an increase in the number of modifications.
 
-In this example, this results in more subtle modifications. The numeric column remains numeric, and the integer column becomes numeric, making it more difficult to identify that something is not quite correct with the data. The changes to the `month` column are also more difficult to identify by inspection, as the only changes are additional spaces at the end of words. If viewing the data in a spreadsheet format, these inconsistencies are harder to spot by eye which can create a nice motivational exercise for programmatic approaches to data processing, alongside data wrangling tasks.
+In this example, this results in more subtle modifications. The numeric column remains numeric, and the integer column becomes numeric, making it more difficult to identify that something is not quite correct with the data. The changes to the 'month' column are also more difficult to identify by eye, using only additional spaces at the end of words. If viewing the data in a spreadsheet format, these inconsistencies are harder to spot by eye, and can create a nice motivational exercises for using programming languages for data processing, alongside data wrangling tasks.
 
 ```{r}
+<<<<<<< HEAD
 #| label: fig-piping
 #| fig-cap: "The result of running a custom combination of function on the clean dataset, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
 #| fig-asp: 0.6
 #| fig-width: 6.5
+=======
+#| label: tbl-piping
+#| tbl-cap: "The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings."
+>>>>>>> main
 set.seed(12345)
-output <- example_data |>
+example_data |>
   make_missing(cols = "month", missing = " ") |>
   make_missing(cols = c("x", "y"), missing = c(NA, 999)) |>
   add_whitespace(cols = "month", messiness = 0.5)
-output_to_image(output)
 ```
 
 Outside of the core `messy()` functions, further functions for data manipulation exist, including `duplicate_rows()`. For example, by setting `messiness = 0.2`, on average 20% of rows in the original data will be duplicated. Due to the random nature of 'messy', and to allow for rounding, the output may not always contain *exactly* 20% additional rows. By default, the duplicated rows are inserted directly underneath the original row. However, setting the `shuffle` argument to `TRUE` results in them being randomly inserted which will be more difficult for students to identify any duplication by eye. 
@@ -266,7 +239,7 @@ messy_penguins <- penguins |>
   change_case(cols = "species", messiness = 0.01)
 ```
 
-To demonstrate how the application of the 'messy' package can be used to create exercises and challenges for students, the data is be visualised using common data exploration charts. 
+To demonstrate how the application of the 'messy' package can be used to create exercises and challenges for students, the data can be visualised using common data exploration charts. 
 
 The 'visdat' package [@visdat] is commonly used to visualise the structure of datasets, and can be used to visualise missing data. By default, the package assumes that missing values are represented by `NA`. @fig-vis-missing shows the output of visualising missing data for the original 'palmerpenguins' dataset and the 'messy' version (with the default `NA` missing values assumed, and the correct encoding used). The first two visualisations appear identical due to the non-standard representation of missing values in the modified columns. This highlights a common situation where students may start out with good intentions to explore patterns in missing values, but fail to identify how missing values have been encoded in the data and therefore miss values.
 
@@ -309,7 +282,7 @@ g1 + g2 + g3 + plot_layout(axes = "collect") &
   )
 ```
 
-The 'visdat' package can also be used to quickly visualise the column types in a dataset, and @fig-visdat shows the types of columns in the original and modified 'palmerpenguins' data. By providing the 'messy' version of the dataset, students are exposed to a wider range of column types. It is fairly common for columns to have the incorrect type, making recognising and addressing this issue an essential skill. For example, long category names are often recoded as numbers, and ordered categories (factors) are often left unordered and arranged alphabetically by default.
+The 'visdat' package can also be used to quickly visualise the column types in a dataset, and @fig-visdat shows the types of columns in the original and modified 'palmerpenguins' data. By providing the 'messy' version of the dataset, students are exposed to a wider range of column types. It's fairly common for columns to have the incorrect type, making recognising and addressing this issue an essential skill. For example, long category names are often recoded as numbers, and ordered categories (factors) are often left unordered and arranged alphabetically be default.
 
 ```{r}
 #| label: fig-visdat
@@ -344,7 +317,7 @@ g2 <- vis_dat(messy_penguins, sort_type = FALSE) +
 g1 + g2 + plot_layout(guides = "collect", axes = "collect")
 ```
 
-When applying statistical methods using categorical columns, many students may assume that category values have been uniquely encoded. However, this is not always the case, and so learning how to aggregate category levels is crucial. @fig-barchart shows the number of unique values in the `species` column of the 'palmerpenguins' data, before and after modification using the 'messy' package. Six additional formats of the category labels have been included, though these are only a small percentage of the whole column. This provides an opportunity for students to learn essential data cleaning techniques, such as removing leading and trailing whitespaces, standardising letter case, and reconciling inconsistencies in how the same values are encoded. 
+When applying statistical methods using categorical columns, may students may assume that category values have been uniquely encoded. However, this is not always the case, and so learning how to aggregate category levels is @fig-barchart shows the number of unique values in the `species` column of the 'palmerpenguins' data, before and after modification using the 'messy' package. Six additional formats of the category labels have been included, though these are only a small percentage of the whole column. This provides an opportunity for students to learn essential data cleaning techniques, such as removing leading and trailing whitespaces, standardising letter case, and reconciling inconsistencies in how the same values are encoded. 
 
 ```{r}
 #| label: fig-barchart
@@ -373,7 +346,7 @@ g1 + g2 + plot_layout(axes = "collect")
 
 ## Discussion {#sec-disc}
 
-These examples highlight how the 'messy' package may be used to modify datasets that instructors already use, to smoothly integrate different types of data wrangling challenges into their teaching. The exercises that can be developed from the modified, messy datasets give students experience of working with a wide range of data issues they are likely to later encounter in their analytical careers. It also gives educators the opportunity to emphasise the use of visualisation not only as a tool for data exploration, but as a crucial step in validating and identifying inconsistencies in data.
+These examples highlight how the 'messy' package may be used to modify datasets that instructors already use, to smoothly integrate different types of data wrangling challenges into their teaching. The exercises that can be developed from the modified, messy datasets give students experience of working with a wide range of data issues they are likely to later encounter in their analytical careers. It also gives educators the opportunity to emphasise the use of visualisation not only as a tool for data exploration, but also as a crucial step in validating and identifying inconsistencies in data.
 
 For instructors using publicly available datasets for assessment purposes, the random nature of the output from 'messy' can ensure that no two datasets are identical. This may be particularly useful in the assessment setting where students receive data with the same structure but unique values to reducing the likelihood of plagiarism, as described by @Shutes2009. However, the random nature of the output means that it is more difficult for instructors to predict model outputs as easily. For example, when using `make_missing()` to randomly add missing values, it is not guaranteed that the distribution of the values has stayed the same. Therefore, students could fit the same models to their individual datasets and obtain very different results. Depending on the context of the model fitting within teaching, this may or may not be a desirable property of 'messy'.
 
