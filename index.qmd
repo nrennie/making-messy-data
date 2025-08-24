@@ -15,6 +15,7 @@ author:
         city: Lancaster
         country: UK
         postal-code: "LA1 4YW"
+        url: "https://chicas.lancaster-university.uk/"
     attributes:
       corresponding: true
   - name: Jack Davison
