@@ -1,9 +1,4 @@
 ---
-format:
-  jasa-html:
-    number-sections: true
-    toc: true
-    format-links: false
 title: "Making 'messy' Data: An R Package for Teaching Data Wrangling with Realistic Data"
 author:
   - name: Nicola Rennie
