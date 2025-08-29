@@ -9,3 +9,6 @@ index.pdf
 agsm.bst
 
 /.quarto/
+*.pdf
+Output/*.tex
+submit-*.*
