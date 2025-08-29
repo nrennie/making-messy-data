@@ -2,13 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.33">
+<meta name="generator" content="quarto-1.7.34">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Nicola Rennie">
 <meta name="author" content="Jack Davison">
-<meta name="dcterms.date" content="2025-08-24">
+<meta name="dcterms.date" content="2025-08-29">
 <meta name="keywords" content="real-world data, randomness, data issues, statistics">
 
 <title>Making ‘messy’ Data: An R Package for Teaching Data Wrangling with Realistic Data</title>
@@ -54,10 +54,10 @@ div.csl-indent {
 <script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="index_files/libs/quarto-html/anchor.min.js"></script>
 <link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-c8ad9e5dbd60b7b70b38521ab19b7da4.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="index_files/libs/bootstrap/bootstrap-96e0afc5ec141497fa5eaabf8dc09ced.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="index_files/libs/bootstrap/bootstrap-c983be18c86f2efd050cbf84ea9bb22c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -112,7 +112,9 @@ div.csl-indent {
   </div>
   <div class="quarto-title-meta-contents">
         <p class="affiliation">
+            <a href="https://chicas.lancaster-university.uk/">
             Lancaster University
+            </a>
           </p>
       </div>
     <div class="quarto-title-meta-contents">
@@ -133,7 +135,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 24, 2025</p>
+      <p class="date">August 29, 2025</p>
     </div>
   </div>
   
@@ -160,9 +162,9 @@ div.csl-indent {
 
 <section id="sec-intro" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="sec-intro"><span class="header-section-number">1</span> Introduction</h2>
-<p>Data wrangling is a fundamental skill in data analysis, yet it is often not explicitly taught as a standalone course. Instead, students are frequently expected to acquire these skills informally or are assumed to already possess them. This presents a challenge, as students may struggle with data preparation tasks that are essential for meaningful analysis. As <span class="citation" data-cites="Hardin2015">Horton and Hardin (<a href="#ref-Hardin2015" role="doc-biblioref">2015</a>)</span> emphasize, ‘if an analyst cannot wrangle data in a form to answer a statistical question, their utility may be limited.’ Ensuring that students develop these skills is therefore crucial for their ability to engage effectively with real-world data. The use of concrete examples can also help students to better understand abstract concepts, which is often a common difficulty <span class="citation" data-cites="Silva2025">(<a href="#ref-Silva2025" role="doc-biblioref">Silva and Sarnecka 2025</a>)</span>.</p>
-<p>There is often a temptation when teaching statistical methods for instructors to use <em>nice</em> datasets. However, these datasets are not very realistic, and do not represent the data that students will later encounter in the real world. The gap between examples used in teaching and introductory textbooks and the real world is notably large <span class="citation" data-cites="Hsu2022">(<a href="#ref-Hsu2022" role="doc-biblioref">Hsu et al. 2022</a>)</span>. Real datasets often contain issues such as typographical errors, missing values encoded in strange ways, or unexpected values. These data issues often derive from human error, poor data collection processes, or errors in pre-processing with software. Therefore, these issues are likely to arise in any analytical project, and so it is essential that students practice skills to address them. Especially since it can be harder for students to identify the mistakes they have made in data wrangling processes, compared to other tasks such as visualisation <span class="citation" data-cites="Rundel2021">(<a href="#ref-Rundel2021" role="doc-biblioref">Çetinkaya-Rundel and Ellison 2021</a>)</span>.</p>
-<p>Though some programmes may include data wrangling as a standalone course, there are many opportunities to integrate wrangling practice into other courses where students work with data. However, this can present challenges for instructors, who may not view data wrangling as part of their teaching responsibilities or may already struggle to cover core subject material within the constraints of a semester. Many available teaching datasets are already clean, and instructors often lack the time to source or modify datasets to better reflect real-world complexities. As a result, despite the importance of data wrangling skills, finding practical ways to incorporate them into existing coursework remains a significant challenge.</p>
+<p>In many academic courses, the exercises and assessments undertaken by students rely on <em>toy</em> datasets (those that are pre-cleaned and ready for students to use for the primary purpose of the session) to illustrate a concept <span class="citation" data-cites="Davis2019">Varlamis (<a href="#ref-Varlamis2025" role="doc-biblioref">2025</a>)</span>. However, these datasets are not very realistic, and do not represent the data that students will later encounter in the real world. The gap between examples used in teaching and introductory textbooks and the real world is notably large <span class="citation" data-cites="Hsu2022">(<a href="#ref-Hsu2022" role="doc-biblioref">Hsu et al. 2022</a>)</span>. Real datasets often contain issues such as typographical errors, missing values encoded in strange ways, or unexpected values. These data issues can derive from human error, poor data collection processes, or errors in pre-processing with software. Therefore, these issues are likely to arise in any analytical project, and so it is essential that students practice skills to identify and resolve them.</p>
+<p>When instructors of introductory statistics or data science courses rely on these toy datasets for teaching purposes, students are not given the opportunity to develop their data wrangling skills. Instead, students are frequently expected to acquire these skills informally or are assumed to already possess them. This presents a challenge, as students may struggle with data preparation tasks that are essential for meaningful analysis. As <span class="citation" data-cites="Hardin2015">Horton and Hardin (<a href="#ref-Hardin2015" role="doc-biblioref">2015</a>)</span> emphasize, ‘if an analyst cannot wrangle data in a form to answer a statistical question, their utility may be limited’. Ensuring that students develop these skills is therefore crucial for their ability to engage effectively with real-world data. The use of concrete examples can also help students to better understand abstract concepts, which is a common difficulty <span class="citation" data-cites="Silva2025">(<a href="#ref-Silva2025" role="doc-biblioref">Silva and Sarnecka 2025</a>)</span>. The importance of practicing data wrangling skills is further emphasised by the fact that it can be harder for students to identify the mistakes they have made in data wrangling processes, compared to other tasks such as visualisation <span class="citation" data-cites="Rundel2021">(<a href="#ref-Rundel2021" role="doc-biblioref">Çetinkaya-Rundel and Ellison 2021</a>)</span>.</p>
+<p>Though some programmes may include data wrangling as a standalone course, there are many opportunities to integrate data wrangling practice into other courses where students work with data. However, this can present challenges for instructors, who may not view data wrangling as part of their teaching responsibilities or may already struggle to cover core subject material within the constraints of a semester. Many available teaching datasets are already clean, and instructors often lack the time to source or modify datasets to better reflect real-world complexities. As a result, despite the importance of data wrangling skills, finding practical ways to incorporate them into existing coursework remains a significant challenge.</p>
 </section>
 <section id="sec-background" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="sec-background"><span class="header-section-number">2</span> Background</h2>
@@ -178,17 +180,17 @@ div.csl-indent {
 <h3 data-number="2.2" class="anchored" data-anchor-id="common-data-issues"><span class="header-section-number">2.2</span> Common data issues</h3>
 <p>To best equip students with relevant data wrangling skills, it is important to identify which data issues they are most likely to encounter in the real world. As discussed in <span class="citation" data-cites="Lewis2024">Lewis (<a href="#ref-Lewis2024" role="doc-biblioref">2024</a>)</span>, common data issues that require pre-analysis cleaning include dealing with inconsistent date formats, poor variable name choices, missing data encoded in a variety of ways, duplicated rows, variables encoded in incorrect formats, and differing formats of the same variable value.</p>
 <p>Missing values are a common issue in data analysis. Though classes on handling and imputing missing values are not an uncommon feature of statistical modelling courses, the practice of initially identifying missing values in data is less common. In R <span class="citation" data-cites="RCore">(<a href="#ref-RCore" role="doc-biblioref">R Core Team 2024</a>)</span>, missing values are explicitly represented as <code>NA</code>. In other software they may be encoded in a variety formats such as empty strings, a single space, placeholder values like 999, or other arbitrary indicators. Additionally, even within the same dataset, different columns may use different conventions for missing data. In some cases, multiple encodings may appear within a single column, each carrying distinct meanings. It is essential that students gain experience in recognising these inconsistencies, as failure to do so may result in overlooking missing values - which even the best choice of imputation method cannot overcome.</p>
-<p>Text data, whether resulting from free-text responses or pre-defined categories, can often contain inconsistencies. This is particularly common in data originating from surveys, where open-ended questions may have been asked, or where questions and available answers have updated in different iterations of the survey. Other common sources of inconsistency in text data include variations in spacing, differences in letter case, and typographical errors. Visualisation techniques can be particularly useful for identifying these issues, as they help reveal patterns that may not be immediately apparent through visual inspection, especially when the proportion of such errors is small. However, many courses focus on teaching the use of data visualisation as a method of communicating results, and don’t allow enough time for data visualisation as a means of effective data validation <span class="citation" data-cites="Hsu2022 Hudiburgh2020">(<a href="#ref-Hsu2022" role="doc-biblioref">Hsu et al. 2022</a>; <a href="#ref-Hudiburgh2020" role="doc-biblioref">Hudiburgh and Garbinsky 2020</a>)</span>.</p>
+<p>Text data, whether resulting from free-text responses or pre-defined categories, can often contain inconsistencies. This is particularly common in data originating from surveys, where open-ended questions may have been asked, or where questions and available answers have updated in different iterations of the survey. For data resulting from web scraping, there may be strange encodings where accented or non-Latin characters exist in the content, or where formatting cannot be easily retained. For example, chemical formulae such as NO<sub>2</sub> may be recorded as <code>"NO2"</code> (without the subscript formatting) or <code>"NO&lt;sub&gt;2&lt;/sub&gt;"</code>(with HTML tags retained). Other common sources of inconsistency in text data include variations in spacing, differences in letter case, and typographical errors. Visualisation techniques can be particularly useful for identifying these issues, as they help reveal patterns that may not be immediately apparent through visual inspection, especially when the proportion of such errors is small. However, many courses focus on teaching the use of data visualisation as a method of communicating results, and don’t allow enough time for data visualisation as a means of effective data validation <span class="citation" data-cites="Hsu2022 Hudiburgh2020">(<a href="#ref-Hsu2022" role="doc-biblioref">Hsu et al. 2022</a>; <a href="#ref-Hudiburgh2020" role="doc-biblioref">Hudiburgh and Garbinsky 2020</a>)</span>.</p>
 </section>
 </section>
 <section id="sec-methods" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="sec-methods"><span class="header-section-number">3</span> Methodology</h2>
 <p>Given the need for a more effective, realistic approach to generating data for teaching, the use of the ‘messy’ R package is proposed. The package takes a clean dataset and randomly introduces common data issues such as missing values, typographic errors, and inconsistencies in data representation. This approach provides students with the opportunity to practice essential data cleaning and wrangling skills, without the need for instructors to modify or replace their existing teaching examples. By adding controlled messiness to familiar datasets, the package allows students to engage with realistic data in a structured and manageable way.</p>
-<p>The ‘messy’ package follows the principles of the tidyverse <span class="citation" data-cites="tidyverse">(<a href="#ref-tidyverse" role="doc-biblioref">Wickham et al. 2019</a>)</span>, offering separate functions that perform specific data de-cleaning tasks, where functions names are indicative of their purpose. For example, the <code>add_whitespace()</code> function adds additional white space to character strings. As in the ‘tidyverse’, these separate functions can be easily piped together to create flexible and efficient combinations of tasks. Additionally, the package includes a wrapper function, <code>messy()</code>, that simplifies the process of creating messy data, allowing users to apply multiple data modifications with a single command. This design ensures that the package is intuitive and consistent, making it easy for users to integrate into their existing teaching workflows.</p>
+<p>The ‘messy’ package follows the <em>tidy design principles</em> <span class="citation" data-cites="tidyDesign">(<a href="#ref-tidyDesign" role="doc-biblioref">Hadley Wickham 2023</a>)</span> of being human-centered, consistent, composable, and inclusive. The package offers separate functions that perform specific data de-cleaning tasks, where functions names are indicative of their purpose. For example, the <code>add_whitespace()</code> function adds additional white space to character strings. As in the ‘tidyverse’ <span class="citation" data-cites="tidyverse">(<a href="#ref-tidyverse" role="doc-biblioref">Wickham et al. 2019</a>)</span>, these separate functions can be easily piped together to create flexible and efficient combinations of tasks. Consistent argument names and implementations are used across these functions. Additionally, the package includes a wrapper function, <code>messy()</code>, that simplifies the process of creating messy data, allowing users to apply multiple data modifications with a single command. This design ensures that the package is intuitive and consistent, making it easy for users to integrate into their existing teaching workflows.</p>
 <p>As with any package or function that utilises random variables, these functions require the user to set a seed to ensure their data generation is reproducible.</p>
 <section id="functions-available" class="level3" data-number="3.1">
 <h3 data-number="3.1" class="anchored" data-anchor-id="functions-available"><span class="header-section-number">3.1</span> Functions available</h3>
-<p>The following functions are available in the ‘messy’ package:</p>
+<p>The following functions are available in version 0.1.0 of the ‘messy’ package:</p>
 <ul>
 <li><code>make_missing()</code>: Randomly adds missing values into the dataset. The default is to randomly replace values with <code>NA</code>, the standard representation of missing values in R.</li>
 <li><code>add_whitespace()</code>: Randomly adds white spaces at the end of character strings, or converts numeric columns to characters and then adds spaces. This type of error is often difficult to recognise by eye, and so this provides students with the opportunity to develop data wrangling processes for identifying unique values.</li>
@@ -204,6 +206,7 @@ div.csl-indent {
 <ul>
 <li><code>messy()</code>: This function applies the <code>make_missing()</code>, <code>add_whitespace()</code>, <code>change_case()</code>, and <code>add_special_chars()</code> functions to the default columns with default parameters.</li>
 </ul>
+<p>The remaining functions are not applied as part of the core <code>messy()</code> function to allow instructors to retain the original size and column names from the input data, as these aspects are likely to be key elements of existing teaching examples.</p>
 </section>
 <section id="user-options" class="level3" data-number="3.2">
 <h3 data-number="3.2" class="anchored" data-anchor-id="user-options"><span class="header-section-number">3.2</span> User options</h3>
@@ -222,89 +225,90 @@ div.csl-indent {
 <p>To illustrate the way that the ‘messy’ package can be used to modify teaching for teaching purposes, it is applied to (i) a small, toy dataset, and (ii) the ‘palmerpenguins’ dataset commonly used in teaching.</p>
 <section id="application-to-a-toy-dataset" class="level3" data-number="4.1">
 <h3 data-number="4.1" class="anchored" data-anchor-id="application-to-a-toy-dataset"><span class="header-section-number">4.1</span> Application to a toy dataset</h3>
-<p>To illustrate the use of the <code>messy()</code> function and how its functions affect the data set, we use a small toy, example dataset as input. As seen in <a href="#tbl-show-example" class="quarto-xref">Table&nbsp;1</a>, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns.</p>
-<div id="tbl-show-example" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Initial clean data set with three columns, including character strings, numeric, and binary variables.
+<p>To illustrate the use of the <code>messy()</code> function and how its functions affect the dataset, we use a small toy, example dataset as input. As seen in <a href="#fig-show-example" class="quarto-xref">Figure&nbsp;1</a>, the example data contains 3 columns - one character column with months of the year, one double column with numeric values, and one integer column with binary values. To allow printing of the entire output for illustrative purposes, only 10 rows are included. Since this is a toy example, not all features of the package can be exhibited in just 10 rows and 3 columns.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-show-example" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-show-example-1.png" class="img-fluid figure-img" width="624">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Initial clean dataset with three columns, including character strings, numeric, and binary variables.
 </figcaption>
-<div aria-describedby="tbl-show-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-   month        x     y
-   &lt;chr&gt;    &lt;dbl&gt; &lt;int&gt;
- 1 January   2.21     1
- 2 January   2.29     1
- 3 January   1.46     0
- 4 February  0.55     1
- 5 February  0.06     0
- 6 February  0.03     1
- 7 March     0.11     1
- 8 March     0.13     1
- 9 April     0.63     1
-10 April     1.39     0</code></pre>
-</div>
-</div>
 </figure>
 </div>
-<p>Running the <code>messy()</code> function on this toy data results in the modifications seen in <a href="#tbl-show-example-data" class="quarto-xref">Table&nbsp;2</a>. The <code>month</code> column has had spaces and special characters added as well as case changes, and the <code>x</code> and <code>y</code> columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.</p>
-<div id="tbl-show-example-data" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2: The result of running <code>messy()</code> function on the clean data set, which adds spaces, special characters, and missing values to the columns.
+</div>
+</div>
+<p>Running the <code>messy()</code> function on this toy data results in the modifications seen in <a href="#fig-show-example-data" class="quarto-xref">Figure&nbsp;2</a>. The <code>month</code> column has had spaces and special characters added as well as case changes, and the <code>x</code> and <code>y</code> columns have had some values replaces with missing values, and had spaces added to the start or end of the numbers. This also results in the numeric and integer columns becoming character columns, due to the additional spaces. This creates exercises is removing special characters, converting from character to numeric values, and ensuring consistent case usage in categories.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-show-example-data" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-show-example-data-1.png" class="img-fluid figure-img" width="624">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The result of running <code>messy()</code> function on the clean dataset, which adds spaces, special characters, and missing values to the columns.
 </figcaption>
-<div aria-describedby="tbl-show-example-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-   month       x       y    
-   &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;
- 1 "January"   "2.21 " "1 " 
- 2 "Jan@ua^ry" "2.29 " "1"  
- 3 "January "  "1.46"  "0"  
- 4 "FEBRUARY"  "0.55"  "1"  
- 5 ".February" "0.06"  "0"  
- 6 "Februa(ry"  &lt;NA&gt;   "1"  
- 7 "March"     "0.11"  &lt;NA&gt; 
- 8 "Ma!rch"    "0.13 " "1"  
- 9 "April"     "0.63"  "1"  
-10 "April"      &lt;NA&gt;   "0"  </code></pre>
-</div>
-</div>
 </figure>
 </div>
-<p>As described in <a href="#sec-methods" class="quarto-xref">Section&nbsp;3</a>, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in <a href="#tbl-piping" class="quarto-xref">Table&nbsp;3</a>, a user has applied the <code>make_missing()</code> function to the <code>month</code> column with a missing value of an empty space, and to the <code>x</code> and <code>y</code> columns with missing values of <code>NA</code> and <code>999</code>. The <code>add_whitespace()</code> function has then also been applied to the <code>month</code> column, with a probability of 50% to create an increase in the number of modifications.</p>
+</div>
+</div>
+<p>As described in <a href="#sec-methods" class="quarto-xref">Section&nbsp;3</a>, users may apply a custom combination of functions to their choice of columns, and alter the default parameter values. For example, to generate the output shown in <a href="#fig-piping" class="quarto-xref">Figure&nbsp;3</a>, a user has applied the <code>make_missing()</code> function to the <code>month</code> column with a missing value of an empty space, and to the <code>x</code> and <code>y</code> columns with missing values of <code>NA</code> and <code>999</code>. The <code>add_whitespace()</code> function has then also been applied to the <code>month</code> column, with a probability of 50% to create an increase in the number of modifications.</p>
 <p>In this example, this results in more subtle modifications. The numeric column remains numeric, and the integer column becomes numeric, making it more difficult to identify that something is not quite correct with the data. The changes to the ‘month’ column are also more difficult to identify by eye, using only additional spaces at the end of words. If viewing the data in a spreadsheet format, these inconsistencies are harder to spot by eye, and can create a nice motivational exercises for using programming languages for data processing, alongside data wrangling tasks.</p>
-<div id="tbl-piping" class="cell quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;3: The result of running a custom combination of function on the clean data set, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings.
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-piping" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-piping-1.png" class="img-fluid figure-img" width="624">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: The result of running a custom combination of function on the clean dataset, which adds spaces to some of the month values, and missing values to all three columns in a variety of encodings.
 </figcaption>
-<div aria-describedby="tbl-piping-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-   month          x     y
-   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;
- 1 "January"   2.21     1
- 2 "January "  2.29     1
- 3 "January " NA        0
- 4 "February"  0.55     1
- 5 "February"  0.06     0
- 6 "February"  0.03     1
- 7 "March "    0.11     1
- 8 "March"     0.13     1
- 9 "April "    0.63     1
-10 "April"     1.39   999</code></pre>
-</div>
-</div>
 </figure>
 </div>
+</div>
+</div>
+<p>Outside of the core <code>messy()</code> functions, further functions for data manipulation exist, including <code>duplicate_rows()</code>. For example, by setting <code>messiness = 0.2</code>, on average 20% of rows in the original data will be duplicated. Due to the random nature of ‘messy’, and to allow for rounding, the output may not always contain <em>exactly</em> 20% additional rows. By default, the duplicated rows are inserted directly underneath the original row. However, setting the <code>shuffle</code> argument to <code>TRUE</code> results in them being randomly inserted which will be more difficult for students to identify any duplication by eye.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-duplicate" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-duplicate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-duplicate-1.png" class="img-fluid figure-img" width="624">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-duplicate-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: The result of running <code>duplicate_rows()</code> function on the clean dataset.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>To demonstrate the applications of messy date functions, we first create a <em>date</em> column in the example data, using the existing <code>month</code> column and setting all new <code>date</code> elements to be equal to the first of that month, in the year 2025.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-date" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-date-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-date-1.png" class="img-fluid figure-img" width="624">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-date-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: The result of running <code>duplicate_rows()</code> function on the clean dataset.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The resulting output from applying the <code>messy_date_formats()</code> retains the <em>correct</em> dates, but with a variety of encodings. This will result in many automated date processing functions returning an error or the incorrect date as output.</p>
 </section>
 <section id="application-to-palmerpenguins" class="level3" data-number="4.2">
 <h3 data-number="4.2" class="anchored" data-anchor-id="application-to-palmerpenguins"><span class="header-section-number">4.2</span> Application to {palmerpenguins}</h3>
 <p>To illustrate the use of the ‘messy’ package on a more realistically sized dataset, the ‘palmerpenguins’ dataset <span class="citation" data-cites="palmerpenguins">(<a href="#ref-palmerpenguins" role="doc-biblioref">Horst et al. 2020</a>)</span> is used as an example. The ‘palmerpenguins’ dataset provides measurements of penguins from three species (Adélie, Chinstrap, and Gentoo) collected from three islands in the Palmer Archipelago, Antarctica. It includes variables such as species, island, bill length and depth, flipper length, body mass, and sex. The dataset is commonly used in data science education, supporting lessons in data visualisation, statistical modelling, and machine learning.</p>
 <p>In this example, the <code>make_missing()</code> function is applied to the <code>island</code> and <code>body_mass_g</code> columns, with a blank space and <code>999</code> used to represent missing data, respectively. The <code>add_whitespace()</code> and <code>change_case()</code> functions are then applied to the <code>species</code> column, with the case change applied with a probability of 1%.</p>
 <p>To demonstrate how the application of the ‘messy’ package can be used to create exercises and challenges for students, the data can be visualised using common data exploration charts.</p>
-<p>The ‘visdat’ package <span class="citation" data-cites="visdat">(<a href="#ref-visdat" role="doc-biblioref">Tierney 2017</a>)</span> is commonly used to visualise the structure of datasets, and can be used to visualise missing data. By default, the package assumes that missing values are represented by <code>NA</code>. <a href="#fig-vis-missing" class="quarto-xref">Figure&nbsp;1</a> shows the output of visualising missing data for the original ‘palmerpenguins’ dataset and the ‘messy’ version (with the default <code>NA</code> missing values assumed, and the correct encoding used). The first two visualisations appear identical due to the non-standard representation of missing values in the modified columns. This highlights a common situation where students may start out with good intentions to explore patterns in missing values, but fail to identify how missing values have been encoded in the data and therefore miss values.</p>
+<p>The ‘visdat’ package <span class="citation" data-cites="visdat">(<a href="#ref-visdat" role="doc-biblioref">Tierney 2017</a>)</span> is commonly used to visualise the structure of datasets, and can be used to visualise missing data. By default, the package assumes that missing values are represented by <code>NA</code>. <a href="#fig-vis-missing" class="quarto-xref">Figure&nbsp;6</a> shows the output of visualising missing data for the original ‘palmerpenguins’ dataset and the ‘messy’ version (with the default <code>NA</code> missing values assumed, and the correct encoding used). The first two visualisations appear identical due to the non-standard representation of missing values in the modified columns. This highlights a common situation where students may start out with good intentions to explore patterns in missing values, but fail to identify how missing values have been encoded in the data and therefore miss values.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-vis-missing" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -313,13 +317,13 @@ Table&nbsp;3: The result of running a custom combination of function on the clea
 <img src="index_files/figure-html/fig-vis-missing-1.png" class="img-fluid figure-img" width="624">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vis-missing-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: Visualisation of missing values in the original <code>palmerpenguins</code> data (a), a ‘messy’ version of the <code>palmerpenguins</code> data with default settings (b), and with correct settings (c).
+Figure&nbsp;6: Visualisation of missing values in the original <code>palmerpenguins</code> data (a), a ‘messy’ version of the <code>palmerpenguins</code> data with default settings (b), and with correct settings (c).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>The ‘visdat’ package can also be used to quickly visualise the column types in a dataset, and <a href="#fig-visdat" class="quarto-xref">Figure&nbsp;2</a> shows the types of columns in the original and modified ‘palmerpenguins’ data. By providing the ‘messy’ version of the dataset, students are exposed to a wider range of column types. It’s fairly common for columns to have the incorrect type, making recognising and addressing this issue an essential skill. For example, long category names are often recoded as numbers, and ordered categories (factors) are often left unordered and arranged alphabetically be default.</p>
+<p>The ‘visdat’ package can also be used to quickly visualise the column types in a dataset, and <a href="#fig-visdat" class="quarto-xref">Figure&nbsp;7</a> shows the types of columns in the original and modified ‘palmerpenguins’ data. By providing the ‘messy’ version of the dataset, students are exposed to a wider range of column types. It’s fairly common for columns to have the incorrect type, making recognising and addressing this issue an essential skill. For example, long category names are often recoded as numbers, and ordered categories (factors) are often left unordered and arranged alphabetically be default.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-visdat" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -328,13 +332,13 @@ Figure&nbsp;1: Visualisation of missing values in the original <code>palmerpengu
 <img src="index_files/figure-html/fig-visdat-1.png" class="img-fluid figure-img" width="624">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-visdat-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Visualisation of column types in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
+Figure&nbsp;7: Visualisation of column types in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<p>When applying statistical methods using categorical columns, may students may assume that category values have been uniquely encoded. However, this is not always the case, and so learning how to aggregate category levels is <a href="#fig-barchart" class="quarto-xref">Figure&nbsp;3</a> shows the number of unique values in the <code>species</code> column of the ‘palmerpenguins’ data, before and after modification using the ‘messy’ package. Six additional formats of the category labels have been included, though these are only a small percentage of the whole column. This provides an opportunity for students to learn essential data cleaning techniques, such as removing leading and trailing whitespaces, standardising letter case, and reconciling inconsistencies in how the same values are encoded.</p>
+<p>When applying statistical methods using categorical columns, may students may assume that category values have been uniquely encoded. However, this is not always the case, and so learning how to aggregate category levels is <a href="#fig-barchart" class="quarto-xref">Figure&nbsp;8</a> shows the number of unique values in the <code>species</code> column of the ‘palmerpenguins’ data, before and after modification using the ‘messy’ package. Six additional formats of the category labels have been included, though these are only a small percentage of the whole column. This provides an opportunity for students to learn essential data cleaning techniques, such as removing leading and trailing whitespaces, standardising letter case, and reconciling inconsistencies in how the same values are encoded.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div id="fig-barchart" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -343,7 +347,7 @@ Figure&nbsp;2: Visualisation of column types in the original <code>palmerpenguin
 <img src="index_files/figure-html/fig-barchart-1.png" class="img-fluid figure-img" width="624">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-barchart-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: Visualisation of unique values of the <code>species</code> column in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
+Figure&nbsp;8: Visualisation of unique values of the <code>species</code> column in the original <code>palmerpenguins</code> data (a) and a ‘messy’ version of the <code>palmerpenguins</code> data (b).
 </figcaption>
 </figure>
 </div>
@@ -354,8 +358,11 @@ Figure&nbsp;3: Visualisation of unique values of the <code>species</code> column
 <section id="sec-disc" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="sec-disc"><span class="header-section-number">5</span> Discussion</h2>
 <p>These examples highlight how the ‘messy’ package may be used to modify datasets that instructors already use, to smoothly integrate different types of data wrangling challenges into their teaching. The exercises that can be developed from the modified, messy datasets give students experience of working with a wide range of data issues they are likely to later encounter in their analytical careers. It also gives educators the opportunity to emphasise the use of visualisation not only as a tool for data exploration, but also as a crucial step in validating and identifying inconsistencies in data.</p>
-<p>For instructors using publicly available datasets for assessment purposes, the random nature of the output from ‘messy’ can ensure that no two datasets are identical. This may be particularly useful in the assessment setting where students receive data with the same structure but unique values to reducing the likelihood of plagiarism, as described by <span class="citation" data-cites="Shutes2009">Shutes (<a href="#ref-Shutes2009" role="doc-biblioref">2009</a>)</span>.</p>
+<p>For instructors using publicly available datasets for assessment purposes, the random nature of the output from ‘messy’ can ensure that no two datasets are identical. This may be particularly useful in the assessment setting where students receive data with the same structure but unique values to reducing the likelihood of plagiarism, as described by <span class="citation" data-cites="Shutes2009">Shutes (<a href="#ref-Shutes2009" role="doc-biblioref">2009</a>)</span>. However, the random nature of the output means that it is more difficult for instructors to predict model outputs as easily. For example, when using <code>make_missing()</code> to randomly add missing values, it is not guaranteed that the distribution of the values has stayed the same. Therefore, students could fit the same models to their individual datasets and obtain very different results. Depending on the context of the model fitting within teaching, this may or may not be a desirable property of ‘messy’.</p>
 <p>Although ‘messy’ is an R package, its usefulness extends beyond teaching R itself, as datasets can be saved as CSV files for use in other programming languages and software. Future work should develop a web application where educators can upload their own datasets, then download a ‘messy’ version in a variety of formats. The web application could also provide downloads of ‘messy’ versions of common datasets such as <code>palemerpenguins</code> or <code>titanic</code>. The ‘messy’ package is also valuable outside of teaching, for R developers who need datasets for testing functions and packages, as it introduces controlled inconsistencies that help evaluate robustness.</p>
+<p>The <code>messy</code> package does currently have a few limitations, mainly in relation to how realistic the messiness of the resulting data can be given the general nature of the package, and the synthetic messiness it creates. For examples, it relies on the input and output data being an R object which either is, or can be coerced to, an R dataframe i.e.&nbsp;having a fixed number of rows and columns. Although this includes <code>sf</code> spatial dataframes, <code>tidygraph</code> networks, and nested tibbles, the <code>messy()</code> functions can only operate on the rectangular aspects of the data. It does not take into account features such as spatial geometries, network relationships, merged and nested cells, changing delimiters, or multiple sheets, all of which are common. This means that instructors may still have to perform some pre-processing of any real world data in order to pass it into the <code>messy()</code> function. These features cannot be easily represented within R, and so future work could incorporate the ability to export messy data in different formats, such as spreadsheets, containing these features.</p>
+<p>The random and automated nature of the output also means that ‘messy’ is limited in how authentic the errors can be, especially for domain-specific problems. The output may not reflect <em>real</em> mistakes in specific fields, in the way that carefully-crafted simulation data might. However, this is simply the trade-off between the quick, user-friendly but general approach provided by ‘messy’, and a more time-consuming, but special approach performed entirely by a user. Since ‘messy’ outputs simple R objects, users could further customise the data issues with their own domain-specific alterations.</p>
+<p>The current implementation of ‘messy’ assumes that variables are independent from each other, at least in how likely they are to be missing or exhibit data issues. In the real world, this is not always true. For example, a more realistic scenario might be that if variable <code>X</code> is missing, then variable <code>Y</code> must also be implicitly missing; or when variable <code>X</code> is equal to <code>Category A</code>, then variable <code>Y</code> is more likely to be reported in an unusual format. Future work could introduce conditional versions of the existing functions where users specify pairs (or sets) of columns in their data which should follow similar patterns of randomness, rather than editing columns independently to each other. Users would be able to specify the extent of the dependence between columns. Despite these limitations, ‘messy’ provides a user-friendly framework for generating more realistic datasets for teaching, and community feature suggestions will play a large part in determining how the package can evolve to incorporate a wider range of more realistic data scenarios.</p>
 </section>
 <section id="supplementary" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="supplementary">Supplementary</h2>
@@ -363,7 +370,7 @@ Figure&nbsp;3: Visualisation of unique values of the <code>species</code> column
 </section>
 <section id="acknowledgments" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="acknowledgments">Acknowledgments</h2>
-<p>The author is especially grateful to the R community and the wider open-source community for their positive response to the package’s initial release. Special thanks go to the early users who identified bugs or suggested new features, particularly Jack Davison, Athanasia Monika Mowinckel, and Philip Leftwich.</p>
+<p>The author is especially grateful to the R community and the wider open-source community for their positive response to the package’s initial release. Special thanks go to the early users who identified bugs or suggested new features, particularly Athanasia Monika Mowinckel and Philip Leftwich who contributed features for the version of the package used in this article.</p>
 </section>
 <section id="declaration-of-interest-statement" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="declaration-of-interest-statement">Declaration of interest statement</h2>
@@ -381,6 +388,9 @@ Casement, C. J., and McSweeney, L. A. (2024), <span>“StatTeacherAssistant: An 
 </div>
 <div id="ref-Rundel2021" class="csl-entry" role="listitem">
 Çetinkaya-Rundel, M., and Ellison, V. (2021), <span>“A fresh look at introductory data science,”</span> <em>Journal of Statistics and Data Science Education</em>, Taylor &amp; Francis, 29, S16–S26. <a href="https://doi.org/10.1080/10691898.2020.1804497">https://doi.org/10.1080/10691898.2020.1804497</a>.
+</div>
+<div id="ref-tidyDesign" class="csl-entry" role="listitem">
+Hadley Wickham (2023), <em><a href="https://design.tidyverse.org/">Tidy design principles</a></em>.
 </div>
 <div id="ref-palmerpenguins" class="csl-entry" role="listitem">
 Horst, A. M., Hill, A. P., and Gorman, K. B. (2020), <em><span class="nocase">palmerpenguins: Palmer Archipelago (Antarctica) penguin data</span></em>. <a href="https://doi.org/10.5281/zenodo.3960218">https://doi.org/10.5281/zenodo.3960218</a>.
@@ -421,8 +431,14 @@ Teaching of Statistics in the Health Sciences (2025), <span>“<a href="https://
 <div id="ref-visdat" class="csl-entry" role="listitem">
 Tierney, N. (2017), <span>“<span class="nocase">visdat: Visualising Whole Data Frames</span>,”</span> <em>JOSS</em>, Journal of Open Source Software, 2, 355. <a href="https://doi.org/10.21105/joss.00355">https://doi.org/10.21105/joss.00355</a>.
 </div>
+<div id="ref-Varlamis2025" class="csl-entry" role="listitem">
+Varlamis, I. (2025), <span>“Messy data in education: Enhancing data science literacy through real-world datasets in a master’s program,”</span> <em>Education Sciences</em>, 15. <a href="https://doi.org/10.3390/educsci15040500">https://doi.org/10.3390/educsci15040500</a>.
+</div>
 <div id="ref-tidyverse" class="csl-entry" role="listitem">
 Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., Kuhn, M., Pedersen, T. L., Miller, E., Bache, S. M., Müller, K., Ooms, J., Robinson, D., Seidel, D. P., Spinu, V., Takahashi, K., Vaughan, D., Wilke, C., Woo, K., and Yutani, H. (2019), <span>“Welcome to the <span class="nocase">tidyverse</span>,”</span> <em>Journal of Open Source Software</em>, 4, 1686. <a href="https://doi.org/10.21105/joss.01686">https://doi.org/10.21105/joss.01686</a>.
+</div>
+<div id="ref-Davis2019" class="csl-entry" role="listitem">
+Yan, D., and Davis, G. E. (2019), <span>“A first course in data science,”</span> <em>Journal of Statistics Education</em>, Taylor &amp; Francis, 27, 99–109. <a href="https://doi.org/10.1080/10691898.2019.1623136">https://doi.org/10.1080/10691898.2019.1623136</a>.
 </div>
 <div id="ref-Zavez2025" class="csl-entry" role="listitem">
 Zavez, K., and Harel, O. (2025), <span>“Teaching statistical concepts using computing tools: A review of the literature,”</span> <em>Journal of Statistics and Data Science Education</em>, Taylor &amp; Francis, 0, 1–21. <a href="https://doi.org/10.1080/26939169.2024.2445541">https://doi.org/10.1080/26939169.2024.2445541</a>.
